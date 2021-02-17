@@ -2,7 +2,6 @@ package com.liceu.sromerom.discussionforum.entities;
 
 
 
-import com.liceu.sromerom.discussionforum.utils.Role;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -23,11 +22,11 @@ public class User {
 
     @Column(nullable = false)
     private String name;
-    private String avatar;
+    private String avatarUrl;
 
-    @Enumerated(EnumType.STRING)
+    //@Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private String role;
 
     //Relationship User-Category (N-M)
     @ManyToMany(cascade = CascadeType.ALL)
@@ -81,19 +80,19 @@ public class User {
         this.name = name;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvatarUrl(String avatar) {
+        this.avatarUrl = avatar;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
@@ -128,7 +127,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
-                ", avatar='" + avatar + '\'' +
+                ", avatar='" + avatarUrl + '\'' +
                 ", role=" + role +
                 ", moderatedCategories=" + moderatedCategories +
                 ", topics=" + topics +
