@@ -38,4 +38,43 @@ public class CategoryServiceImpl implements CategoryService{
     public boolean existsCategoryBySlug(String slug) {
         return categoryRepo.existsBySlug(slug);
     }
+
+    @Override
+    public Category createCategory(Category category) {
+        //slug
+        //color
+        String theoricalSlug = category.getTitle().toLowerCase().replace(" ", "-");
+        int aux = 1;
+        while (categoryRepo.existsBySlug(theoricalSlug)) {
+            theoricalSlug = category.getTitle().toLowerCase().replace(" ", "-") + aux;
+            aux++;
+        }
+
+        category.setSlug(theoricalSlug);
+        category.setColor(generateRandomColor());
+
+       return categoryRepo.save(category);
+
+    }
+
+    @Override
+    public Category editCategory(String slug, Category category) {
+
+        Category toEdit = categoryRepo.findBySlug(slug);
+        toEdit.setTitle(category.getTitle());
+        toEdit.setDescription(category.getDescription());
+        return categoryRepo.save(toEdit);
+    }
+
+    @Override
+    public boolean deleteCategory(String slug) {
+        Category categoryToDelete = categoryRepo.findBySlug(slug);
+        categoryRepo.deleteById(categoryToDelete.getId());
+        if (categoryRepo.existsBySlug(slug)) return false;
+        return true;
+    }
+
+    private String generateRandomColor() {
+        return "hsl(" + Math.round(Math.random() * 360) + ", 50%, 50%)";
+    }
 }

@@ -12,7 +12,7 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userid;
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -48,12 +48,12 @@ public class User {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Reply> replies;
 
-    public Long getUserid() {
-        return userid;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserid(Long userid) {
-        this.userid = userid;
+    public void setId(Long userid) {
+        this.id = userid;
     }
 
     public String getEmail() {
@@ -123,7 +123,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userid=" + userid +
+                "userid=" + id +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +

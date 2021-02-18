@@ -10,9 +10,9 @@ import java.util.Set;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long categoryid;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String slug;
     private String title;
     private String description;
@@ -27,12 +27,12 @@ public class Category {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Topic> topics;
 
-    public Long getCategoryid() {
-        return categoryid;
+    public Long getId() {
+        return id;
     }
 
-    public void setCategoryid(Long categoryid) {
-        this.categoryid = categoryid;
+    public void setId(Long categoryid) {
+        this.id = categoryid;
     }
 
     public String getSlug() {
@@ -86,7 +86,7 @@ public class Category {
     @Override
     public String toString() {
         return "Category{" +
-                "categoryid=" + categoryid +
+                "categoryid=" + id +
                 ", slug='" + slug + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +

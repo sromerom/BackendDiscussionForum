@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long replyid;
+    private Long id;
 
     @Column(nullable = false)
     private String content;
@@ -29,12 +29,12 @@ public class Reply {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
-    public Long getReplyid() {
-        return replyid;
+    public Long getId() {
+        return id;
     }
 
-    public void setReplyid(Long replyid) {
-        this.replyid = replyid;
+    public void setId(Long replyid) {
+        this.id = replyid;
     }
 
     public String getContent() {
@@ -80,7 +80,7 @@ public class Reply {
     @Override
     public String toString() {
         return "Reply{" +
-                "replyid=" + replyid +
+                "replyid=" + id +
                 ", content='" + content + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +

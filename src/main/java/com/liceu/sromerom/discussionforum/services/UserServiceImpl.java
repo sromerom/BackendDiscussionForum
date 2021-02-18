@@ -14,7 +14,6 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean validateUser(User userToValidate) {
-
         try {
             User existsUserWithEmail = userRepo.findByEmail(userToValidate.getEmail());
             if (userRepo.existsByEmail(userToValidate.getEmail()) && existsUserWithEmail != null && userToValidate.getPassword() != null) {

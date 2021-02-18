@@ -11,7 +11,7 @@ import java.util.Set;
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long topicid;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -41,12 +41,12 @@ public class Topic {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Reply> replies;
 
-    public Long getTopicid() {
-        return topicid;
+    public Long getId() {
+        return id;
     }
 
-    public void setTopicid(Long topicid) {
-        this.topicid = topicid;
+    public void setId(Long topicid) {
+        this.id = topicid;
     }
 
     public String getTitle() {
@@ -116,7 +116,7 @@ public class Topic {
     @Override
     public String toString() {
         return "Topic{" +
-                "topicid=" + topicid +
+                "topicid=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", views=" + views +
