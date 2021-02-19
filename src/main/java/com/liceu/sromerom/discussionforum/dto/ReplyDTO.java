@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class ReplyDTO {
     private String content;
     private LocalDateTime createdAt;
-    private String topic;
+    private Long topic;
     private LocalDateTime updatedAt;
     private UserDTO user;
     private Long _id;
@@ -26,11 +26,11 @@ public class ReplyDTO {
         this.createdAt = createdAt;
     }
 
-    public String getTopic() {
+    public Long getTopic() {
         return topic;
     }
 
-    public void setTopic(String topic) {
+    public void setTopic(Long topic) {
         this.topic = topic;
     }
 

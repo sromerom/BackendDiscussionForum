@@ -47,7 +47,7 @@ public class User {
     private Set<Topic> topicsCreated;
 
     //Relationship User-Reply (1-N)
-    @OneToMany(mappedBy = "replyOwner", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Reply> repliesCreated;
 

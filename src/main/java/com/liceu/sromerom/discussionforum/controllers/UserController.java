@@ -1,5 +1,6 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
+import com.liceu.sromerom.discussionforum.dto.UserDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.UserDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.User;
 import com.liceu.sromerom.discussionforum.services.CategoryService;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -61,6 +64,9 @@ public class UserController {
         String[] root = new String[]{"own_topics:write", "own_topics:delete", "own_replies:write", "own_replies:delete", "categories:write", "categories:delete"};
 
 
+        //Map<String, Object> permissions;
+        //permission.put("root", root)
+
         JSONObject jsonLogin = new JSONObject();
         JSONObject permissions = new JSONObject();
 
@@ -81,7 +87,7 @@ public class UserController {
         System.out.println("Substract del token!!!: " + user);
         if (user != null && user != "") {
             User getInfoProfile = userService.findUserByEmail(user);
-            com.liceu.sromerom.discussionforum.dto.UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
+            UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
 
             String[] root = new String[]{"own_topics:write", "own_topics:delete", "own_replies:write", "own_replies:delete", "categories:write", "categories:delete"};
 

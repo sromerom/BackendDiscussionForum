@@ -27,7 +27,7 @@ public class Reply {
     //Relationship reply-User (N-1)
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User replyOwner;
+    private User user;
 
     //Relationship reply-Topic (N-1)
     @ManyToOne
@@ -68,12 +68,12 @@ public class Reply {
     }
 
     //@JsonBackReference(value = "replyOwner")
-    public User getReplyOwner() {
-        return replyOwner;
+    public User getUser() {
+        return user;
     }
 
-    public void setReplyOwner(User replyOwner) {
-        this.replyOwner = replyOwner;
+    public void setUser(User replyOwner) {
+        this.user = replyOwner;
     }
 
     //@JsonBackReference

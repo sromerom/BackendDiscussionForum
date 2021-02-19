@@ -15,11 +15,6 @@ public class TopicDTOConverter {
     ModelMapper modelMapper;
 
     public TopicDTO convertToDto(Topic topic) {
-        JSONObject permissions = new JSONObject();
-        String[] root = new String[]{"own_topics:write", "own_topics:delete", "own_replies:write", "own_replies:delete", "categories:write", "categories:delete"};
-        permissions.put("categories", "");
-        permissions.put("root", root);
-
         modelMapper.typeMap(Topic.class, TopicDTO.class).addMappings(mapper -> mapper.map(src -> src.getCategory().get_id(), (dest, v) -> dest.getCategory()));
         modelMapper.addConverter(toEmpty);
         //modelMapper.addMappings(parseCategory);
@@ -28,7 +23,6 @@ public class TopicDTOConverter {
 
     Converter<String, String> toEmpty = new AbstractConverter<>() {
         protected String convert(String source) {
-            System.out.println(source + " es null?");
             return source == null ? "" : source;
         }
     };

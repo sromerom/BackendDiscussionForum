@@ -17,6 +17,7 @@ public class ReplyDTOConverter {
     ModelMapper modelMapper;
 
     public ReplyDTO convertToDto(Reply reply) {
+        modelMapper.typeMap(Reply.class, ReplyDTO.class).addMappings(mapper -> mapper.map(src -> src.getTopic().get_id(), (dest, v) -> dest.getTopic()));
         modelMapper.addConverter(toEmpty);
         return modelMapper.map(reply, ReplyDTO.class);
     }

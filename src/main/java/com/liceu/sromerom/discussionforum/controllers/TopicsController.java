@@ -40,7 +40,6 @@ public class TopicsController {
                     return topicDTO;
                 })
                 .collect(Collectors.toList());
-        System.out.println("Topic bueno: " + dtoList.get(0));
         return ResponseEntity.ok(dtoList);
     }
 
@@ -48,7 +47,6 @@ public class TopicsController {
     public ResponseEntity<?> getTopic(@PathVariable Long id) {
         Topic topic = topicService.findTopicById(id);
         TopicDTO topicDTO = topicDTOConverter.convertToDto(topic);
-        System.out.println("Topic malo: " + topicDTO);
         topicDTO.getUser().setAvatarUrl("");
 
         return ResponseEntity.ok(topicDTO);
