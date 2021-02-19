@@ -2,6 +2,8 @@ package com.liceu.sromerom.discussionforum.entities;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -9,10 +11,11 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "_id")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long _id;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -39,21 +42,21 @@ public class User {
 
 
     //Relationship User-Topic (1-N)
-    @OneToMany(mappedBy = "topicOwner", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<Topic> topics;
+    private Set<Topic> topicsCreated;
 
     //Relationship User-Reply (1-N)
     @OneToMany(mappedBy = "replyOwner", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<Reply> replies;
+    private Set<Reply> repliesCreated;
 
-    public Long getId() {
-        return id;
+    public Long get_id() {
+        return _id;
     }
 
-    public void setId(Long userid) {
-        this.id = userid;
+    public void set_id(Long id) {
+        this._id = id;
     }
 
     public String getEmail() {
@@ -84,8 +87,8 @@ public class User {
         return avatarUrl;
     }
 
-    public void setAvatarUrl(String avatar) {
-        this.avatarUrl = avatar;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getRole() {
@@ -96,6 +99,7 @@ public class User {
         this.role = role;
     }
 
+    //@JsonManagedReference(value = "getModeratedCategories")
     public Set<Category> getModeratedCategories() {
         return moderatedCategories;
     }
@@ -104,34 +108,22 @@ public class User {
         this.moderatedCategories = moderatedCategories;
     }
 
-    public Set<Topic> getTopics() {
-        return topics;
+
+    //@JsonManagedReference(value = "topicOwner")
+    public Set<Topic> getTopicsCreated() {
+        return topicsCreated;
     }
 
-    public void setTopics(Set<Topic> topics) {
-        this.topics = topics;
+    public void setTopicsCreated(Set<Topic> topics) {
+        this.topicsCreated = topics;
     }
 
-    public Set<Reply> getReplies() {
-        return replies;
+    //@JsonManagedReference(value = "replyOwner")
+    public Set<Reply> getRepliesCreated() {
+        return repliesCreated;
     }
 
-    public void setReplies(Set<Reply> replies) {
-        this.replies = replies;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userid=" + id +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", avatar='" + avatarUrl + '\'' +
-                ", role=" + role +
-                ", moderatedCategories=" + moderatedCategories +
-                ", topics=" + topics +
-                ", replies=" + replies +
-                '}';
+    public void setRepliesCreated(Set<Reply> replies) {
+        this.repliesCreated = replies;
     }
 }

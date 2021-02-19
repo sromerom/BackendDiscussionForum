@@ -1,5 +1,5 @@
 package com.liceu.sromerom.discussionforum.entities;
-
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -8,17 +8,18 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "_id")
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long _id;
 
     @Column(nullable = false)
     private String title;
     private String content;
 
     @Column(nullable = false)
-    private Long views;
+    private Integer views;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -34,19 +35,20 @@ public class Topic {
     //Relationship Topic-User (N-1)
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User topicOwner;
+    private User user;
 
     //Relationship Topic-Reply (1-N)
     @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Reply> replies;
 
-    public Long getId() {
-        return id;
+
+    public Long get_id() {
+        return _id;
     }
 
-    public void setId(Long topicid) {
-        this.id = topicid;
+    public void set_id(Long id) {
+        this._id = id;
     }
 
     public String getTitle() {
@@ -65,11 +67,11 @@ public class Topic {
         this.content = content;
     }
 
-    public Long getViews() {
+    public Integer getViews() {
         return views;
     }
 
-    public void setViews(Long views) {
+    public void setViews(Integer views) {
         this.views = views;
     }
 
@@ -89,6 +91,7 @@ public class Topic {
         this.updatedAt = updatedAt;
     }
 
+    //@JsonBackReference
     public Category getCategory() {
         return category;
     }
@@ -97,34 +100,21 @@ public class Topic {
         this.category = category;
     }
 
-    public User getTopicOwner() {
-        return topicOwner;
+    //JsonBackReference(value = "topicOwner")
+    public User getUser() {
+        return user;
     }
 
-    public void setTopicOwner(User topicOwner) {
-        this.topicOwner = topicOwner;
+    public void setUser(User topicOwner) {
+        this.user = topicOwner;
     }
 
+    //@JsonManagedReference
     public Set<Reply> getReplies() {
         return replies;
     }
 
     public void setReplies(Set<Reply> replies) {
         this.replies = replies;
-    }
-
-    @Override
-    public String toString() {
-        return "Topic{" +
-                "topicid=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", views=" + views +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", category=" + category +
-                ", topicOwner=" + topicOwner +
-                ", replies=" + replies +
-                '}';
     }
 }

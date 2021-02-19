@@ -1,7 +1,6 @@
 package com.liceu.sromerom.discussionforum.services;
 
 import com.liceu.sromerom.discussionforum.entities.Category;
-import com.liceu.sromerom.discussionforum.entities.User;
 
 import java.util.List;
 

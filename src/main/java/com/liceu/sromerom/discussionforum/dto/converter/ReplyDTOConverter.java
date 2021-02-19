@@ -1,9 +1,9 @@
 package com.liceu.sromerom.discussionforum.dto.converter;
 
+import com.liceu.sromerom.discussionforum.dto.ReplyDTO;
 import com.liceu.sromerom.discussionforum.dto.TopicDTO;
-import com.liceu.sromerom.discussionforum.dto.UserDTO;
+import com.liceu.sromerom.discussionforum.entities.Reply;
 import com.liceu.sromerom.discussionforum.entities.Topic;
-import com.liceu.sromerom.discussionforum.entities.User;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -11,17 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
-
 @Component
-public class UserDTOConverter {
+public class ReplyDTOConverter {
     @Autowired
     ModelMapper modelMapper;
 
-    public com.liceu.sromerom.discussionforum.dto.UserDTO convertToDto(User user) {
+    public ReplyDTO convertToDto(Reply reply) {
         modelMapper.addConverter(toEmpty);
-        return modelMapper.map(user, com.liceu.sromerom.discussionforum.dto.UserDTO.class);
+        return modelMapper.map(reply, ReplyDTO.class);
     }
-
 
     Converter<String, String> toEmpty = new AbstractConverter<>() {
         protected String convert(String source) {

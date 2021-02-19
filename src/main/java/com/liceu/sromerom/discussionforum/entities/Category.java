@@ -1,5 +1,6 @@
 package com.liceu.sromerom.discussionforum.entities;
 
+import com.fasterxml.jackson.annotation.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -7,10 +8,11 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "_id")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long _id;
 
     @Column(nullable = false, unique = true)
     private String slug;
@@ -25,14 +27,16 @@ public class Category {
     //Relationship Category-Topic (1-N)
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    @net.minidev.json.annotate.JsonIgnore
     private Set<Topic> topics;
 
-    public Long getId() {
-        return id;
+    public Long get_id() {
+        return _id;
     }
 
-    public void setId(Long categoryid) {
-        this.id = categoryid;
+    public void set_id(Long id) {
+        this._id = id;
     }
 
     public String getSlug() {
@@ -67,6 +71,7 @@ public class Category {
         this.color = color;
     }
 
+    //@JsonManagedReference
     public Set<User> getModerators() {
         return moderators;
     }
@@ -75,24 +80,12 @@ public class Category {
         this.moderators = moderators;
     }
 
+    //@JsonManagedReference
     public Set<Topic> getTopics() {
         return topics;
     }
 
     public void setTopics(Set<Topic> topics) {
         this.topics = topics;
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "categoryid=" + id +
-                ", slug='" + slug + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", color='" + color + '\'' +
-                ", moderators=" + moderators +
-                ", topics=" + topics +
-                '}';
     }
 }

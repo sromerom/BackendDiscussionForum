@@ -69,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public boolean deleteCategory(String slug) {
         Category categoryToDelete = categoryRepo.findBySlug(slug);
-        categoryRepo.deleteById(categoryToDelete.getId());
+        categoryRepo.deleteById(categoryToDelete.get_id());
         if (categoryRepo.existsBySlug(slug)) return false;
         return true;
     }

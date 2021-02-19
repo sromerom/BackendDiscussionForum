@@ -1,13 +1,18 @@
 package com.liceu.sromerom.discussionforum.entities;
 
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "_id")
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long _id;
 
     @Column(nullable = false)
     private String content;
@@ -29,12 +34,13 @@ public class Reply {
     @JoinColumn(name = "topic_id", nullable = false)
     private Topic topic;
 
-    public Long getId() {
-        return id;
+
+    public Long get_id() {
+        return _id;
     }
 
-    public void setId(Long replyid) {
-        this.id = replyid;
+    public void set_id(Long id) {
+        this._id = id;
     }
 
     public String getContent() {
@@ -61,6 +67,7 @@ public class Reply {
         this.updatedAt = updatedAt;
     }
 
+    //@JsonBackReference(value = "replyOwner")
     public User getReplyOwner() {
         return replyOwner;
     }
@@ -69,23 +76,12 @@ public class Reply {
         this.replyOwner = replyOwner;
     }
 
+    //@JsonBackReference
     public Topic getTopic() {
         return topic;
     }
 
     public void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    @Override
-    public String toString() {
-        return "Reply{" +
-                "replyid=" + id +
-                ", content='" + content + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", replyOwner=" + replyOwner +
-                ", topic=" + topic +
-                '}';
     }
 }
