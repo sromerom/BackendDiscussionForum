@@ -33,6 +33,8 @@ public class TokenServiceImpl implements TokenService {
         return token;
     }
 
+
+
     @Override
     public String getSubject(String token) {
         String subject = JWT.require(Algorithm.HMAC256(tokenSecret.getBytes()))

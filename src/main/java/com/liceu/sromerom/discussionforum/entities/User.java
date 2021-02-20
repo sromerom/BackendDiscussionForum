@@ -25,6 +25,8 @@ public class User {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String avatarUrl;
 
     //@Enumerated(EnumType.STRING)

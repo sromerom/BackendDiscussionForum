@@ -1,5 +1,7 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
+import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTO;
+import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTO;
 import com.liceu.sromerom.discussionforum.dto.UserDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.UserDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.User;
@@ -50,7 +52,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User userToLogin) {
-        System.out.println(userToLogin);
         if (!userService.validateUser(userToLogin)) {
             JSONObject errorJSON = new JSONObject();
             errorJSON.put("message", "Incorrect email or password.");
@@ -58,9 +59,8 @@ public class UserController {
         }
 
         String token = tokenService.generateNewToken(userToLogin);
-        System.out.println("Token: " + token);
 
-        com.liceu.sromerom.discussionforum.dto.UserDTO userDTO = userDTOConverter.convertToDto(userService.findUserByEmail(userToLogin.getEmail()));
+        UserDTO userDTO = userDTOConverter.convertToDto(userService.findUserByEmail(userToLogin.getEmail()));
         String[] root = new String[]{"own_topics:write", "own_topics:delete", "own_replies:write", "own_replies:delete", "categories:write", "categories:delete"};
 
 
@@ -77,14 +77,55 @@ public class UserController {
 
         jsonLogin.put("user", userDTO);
         jsonLogin.put("token", token);
-
-        System.out.println(jsonLogin);
+        
         return ResponseEntity.ok(jsonLogin);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<?> editProfile(@RequestAttribute String user, @RequestBody EditProfileUserDTO editProfileUserDTO) {
+        if (user != null && user != "") {
+            if (userService.existsUserByEmail(user)) {
+                UserDTO userDTO = userDTOConverter.convertToDto(userService.editProfile(user, editProfileUserDTO));
+                String token = tokenService.generateNewToken(userService.findUserByEmail(userDTO.getEmail()));
+                String[] root = new String[]{"own_topics:write", "own_topics:delete", "own_replies:write", "own_replies:delete", "categories:write", "categories:delete"};
+
+                JSONObject jsonLogin = new JSONObject();
+                JSONObject permissions = new JSONObject();
+
+                permissions.put("categories", "");
+                permissions.put("root", root);
+
+                userDTO.setPermissions(permissions);
+
+                jsonLogin.put("user", userDTO);
+                jsonLogin.put("token", token);
+
+                return ResponseEntity.ok(jsonLogin);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/profile/password")
+    public ResponseEntity<?> editPassword(@RequestAttribute String user, @RequestBody EditPasswordUserDTO editPasswordUserDTO) {
+        if (user != null && user != "") {
+            if (userService.existsUserByEmail(user)) {
+                boolean passwordChanged = userService.editPasswordProfile(user, editPasswordUserDTO);
+                if (passwordChanged) return ResponseEntity.ok(true);
+            }
+
+            JSONObject json = new JSONObject();
+            json.put("message", "Your current password is wrong");
+            String message = json.toJSONString();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/getprofile")
     public ResponseEntity<?> getProfile(@RequestAttribute String user) {
-        System.out.println("Substract del token!!!: " + user);
         if (user != null && user != "") {
             User getInfoProfile = userService.findUserByEmail(user);
             UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
