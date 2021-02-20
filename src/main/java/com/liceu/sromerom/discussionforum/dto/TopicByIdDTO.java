@@ -1,25 +1,28 @@
 package com.liceu.sromerom.discussionforum.dto;
 
+import com.liceu.sromerom.discussionforum.entities.Category;
+import com.liceu.sromerom.discussionforum.entities.Reply;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
-public class TopicDTO {
-    private Long category;
+public class TopicByIdDTO {
+    private Category category;
     private String content;
     private LocalDateTime createdAt;
     private Long _id;
-    private Integer numberOfReplies;
+    private List<ReplyDTO> replies;
     private String title;
     private LocalDateTime updatedAt;
     private UserDTO user;
     private Integer views;
 
-
-    public Long getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(Long category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -47,24 +50,13 @@ public class TopicDTO {
         this._id = _id;
     }
 
-    public Integer getNumberOfReplies() {
-        return numberOfReplies;
-    }
-
-    public void setNumberOfReplies(Integer numberOfReplies) {
-        this.numberOfReplies = numberOfReplies;
-    }
-
-    /*
-    public Set<Reply> getReplies() {
+    public List<ReplyDTO> getReplies() {
         return replies;
     }
 
-    public void setReplies(Set<Reply> replies) {
+    public void setReplies(List<ReplyDTO> replies) {
         this.replies = replies;
     }
-
-     */
 
     public String getTitle() {
         return title;
@@ -96,20 +88,5 @@ public class TopicDTO {
 
     public void setViews(Integer views) {
         this.views = views;
-    }
-
-    @Override
-    public String toString() {
-        return "TopicDTO{" +
-                "category=" + category +
-                ", content='" + content + '\'' +
-                ", createdAt=" + createdAt +
-                ", _id=" + _id +
-                ", numberOfReplies=" + numberOfReplies +
-                ", title='" + title + '\'' +
-                ", updatedAt=" + updatedAt +
-                ", user={" + user.get_id() + ", " + user.getEmail() + ", " + user.getEmail() + ", " + user.getAvatarUrl() + ", " + user.getPermissions() + "}" +
-                ", views=" + views +
-                '}';
     }
 }

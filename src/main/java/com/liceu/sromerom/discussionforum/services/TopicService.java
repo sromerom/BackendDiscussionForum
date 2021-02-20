@@ -1,6 +1,7 @@
 package com.liceu.sromerom.discussionforum.services;
 
 
+import com.liceu.sromerom.discussionforum.dto.TopicDTO;
 import com.liceu.sromerom.discussionforum.entities.Topic;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface TopicService {
     Topic findTopicById(Long topicid);
     Topic createTopic(String email, String payload);
 
-    Topic editTopic(Long topicid, Topic topic);
+    Topic editTopic(Long topicid, String payload);
 
     boolean deleteTopic(Long topicid);
     boolean existsTopic(Long topicid);

@@ -17,7 +17,7 @@ public class UserDTOConverter {
     @Autowired
     ModelMapper modelMapper;
 
-    public com.liceu.sromerom.discussionforum.dto.UserDTO convertToDto(User user) {
+    public UserDTO convertToDto(User user) {
         modelMapper.addConverter(toEmpty);
         return modelMapper.map(user, com.liceu.sromerom.discussionforum.dto.UserDTO.class);
     }

@@ -58,12 +58,22 @@ public class TopicServiceImpl implements TopicService{
     }
 
     @Override
-    public Topic editTopic(Long topicid, Topic topic) {
-        return null;
+    public Topic editTopic(Long topicid, String payload) {
+        Gson gson = new Gson();
+        Map<String, String> payloadMap = gson.fromJson(payload, HashMap.class);
+        Topic topicToEdit = topicRepo.findById(topicid).get();
+        topicToEdit.setTitle(payloadMap.get("title"));
+        topicToEdit.setContent(payloadMap.get("content"));
+        topicToEdit.setCategory(categoryRepo.findBySlug(payloadMap.get("category")));
+        return topicRepo.save(topicToEdit);
     }
 
     @Override
     public boolean deleteTopic(Long topicid) {
+        if (existsTopic(topicid)) {
+            topicRepo.deleteById(topicid);
+            if (!existsTopic(topicid)) return true;
+        }
         return false;
     }
 

@@ -2,6 +2,7 @@ package com.liceu.sromerom.discussionforum.dto.converter;
 
 import com.liceu.sromerom.discussionforum.dto.TopicDTO;
 import com.liceu.sromerom.discussionforum.dto.UserDTO;
+import com.liceu.sromerom.discussionforum.entities.Reply;
 import com.liceu.sromerom.discussionforum.entities.Topic;
 import net.minidev.json.JSONObject;
 import org.modelmapper.*;

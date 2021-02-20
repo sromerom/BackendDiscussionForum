@@ -18,7 +18,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String header = request.getHeader("Authorization");
-        System.out.println("Header: " + header);
+        //System.out.println("Header: " + header);
         /*
         System.out.println("Metodo actual: " + request.getMethod());
         if (request.getMethod().equals("GET") || notNeedLogin(request)) {
@@ -33,17 +33,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
          */
         if (header == null) {
-            System.out.println("No tienes permiso bro");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
 
         if (header.equals("Bearer null")) {
-            System.out.println("Se ha enviado el bearer pero vacio!");
             return true;
         }
         try {
-            System.out.println("Hay token!!!!!!!!!");
             String token = header.replace("Bearer ", "");
             String user = tokenService.getSubject(token);
             request.setAttribute("user", user);

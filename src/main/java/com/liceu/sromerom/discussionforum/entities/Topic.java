@@ -117,4 +117,19 @@ public class Topic {
     public void setReplies(Set<Reply> replies) {
         this.replies = replies;
     }
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "_id=" + _id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", views=" + views +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", category=" + category.getTitle() +
+                ", user=" + user.getEmail() +
+                ", replies=" + replies +
+                '}';
+    }
 }

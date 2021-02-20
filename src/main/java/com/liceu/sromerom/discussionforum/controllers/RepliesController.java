@@ -1,11 +1,8 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
 import com.liceu.sromerom.discussionforum.dto.ReplyDTO;
-import com.liceu.sromerom.discussionforum.dto.TopicDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.ReplyDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.Reply;
-import com.liceu.sromerom.discussionforum.entities.Topic;
-import com.liceu.sromerom.discussionforum.entities.User;
 import com.liceu.sromerom.discussionforum.services.ReplyService;
 import com.liceu.sromerom.discussionforum.services.UserService;
 import net.minidev.json.JSONObject;
@@ -56,8 +53,8 @@ public class RepliesController {
     }
 
     ///topics/:topicId/replies/:replyId
-    @DeleteMapping("/topics/{topicId}/replies/{replyId}'")
-    public ResponseEntity<?> deleteCategories(@PathVariable Long topicId, @PathVariable Long replyId) {
+    @DeleteMapping("/topics/{topicId}/replies/{replyId}")
+    public ResponseEntity<?> deleteReplies(@PathVariable Long topicId, @PathVariable Long replyId) {
         if (replyService.existsReply(replyId)) {
             return ResponseEntity.ok(replyService.deleteReply(replyId));
         } else {

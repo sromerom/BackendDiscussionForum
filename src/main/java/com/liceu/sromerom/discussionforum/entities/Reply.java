@@ -84,4 +84,16 @@ public class Reply {
     public void setTopic(Topic topic) {
         this.topic = topic;
     }
+
+    @Override
+    public String toString() {
+        return "Reply{" +
+                "_id=" + _id +
+                ", content='" + content + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", user=" + user.getEmail() +
+                ", topic=" + topic.get_id() +
+                '}';
+    }
 }

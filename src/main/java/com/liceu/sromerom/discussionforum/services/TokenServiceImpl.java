@@ -15,7 +15,7 @@ public class TokenServiceImpl implements TokenService {
     String tokenSecret;
 
     @Value("${token.expiration.time}")
-    String tokenExpirationTime;
+    Long tokenExpirationTime;
 
 
     @Override
@@ -28,7 +28,7 @@ public class TokenServiceImpl implements TokenService {
                 //.withSubject(user.getAvatarUrl())
                 //.withSubject(user.getModeratedCategories().toString())
                 //.withSubject(String.valueOf(System.currentTimeMillis() / 1000))
-                .withExpiresAt(new Date(System.currentTimeMillis() + 100000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + tokenExpirationTime))
                 .sign(Algorithm.HMAC256(tokenSecret.getBytes()));
         return token;
     }

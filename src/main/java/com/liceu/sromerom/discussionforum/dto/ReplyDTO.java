@@ -3,9 +3,9 @@ package com.liceu.sromerom.discussionforum.dto;
 import java.time.LocalDateTime;
 
 public class ReplyDTO {
+    //private Long topic;
     private String content;
     private LocalDateTime createdAt;
-    private Long topic;
     private LocalDateTime updatedAt;
     private UserDTO user;
     private Long _id;
@@ -26,6 +26,7 @@ public class ReplyDTO {
         this.createdAt = createdAt;
     }
 
+    /*
     public Long getTopic() {
         return topic;
     }
@@ -34,6 +35,7 @@ public class ReplyDTO {
         this.topic = topic;
     }
 
+     */
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }

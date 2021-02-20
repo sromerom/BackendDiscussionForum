@@ -1,8 +1,10 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
+import com.liceu.sromerom.discussionforum.dto.TopicByIdDTO;
 import com.liceu.sromerom.discussionforum.dto.TopicDTO;
 import com.liceu.sromerom.discussionforum.dto.UserDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.ReplyDTOConverter;
+import com.liceu.sromerom.discussionforum.dto.converter.TopicByIdDTOConverter;
 import com.liceu.sromerom.discussionforum.dto.converter.TopicDTOConverter;
 import com.liceu.sromerom.discussionforum.dto.converter.UserDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.Topic;
@@ -26,6 +28,9 @@ public class TopicsController {
     TopicDTOConverter topicDTOConverter;
 
     @Autowired
+    TopicByIdDTOConverter topicByIdDTOConverter;
+
+    @Autowired
     UserDTOConverter userDTOConverter;
 
     @Autowired
@@ -46,10 +51,10 @@ public class TopicsController {
     @GetMapping("/topics/{id}")
     public ResponseEntity<?> getTopic(@PathVariable Long id) {
         Topic topic = topicService.findTopicById(id);
-        TopicDTO topicDTO = topicDTOConverter.convertToDto(topic);
-        topicDTO.getUser().setAvatarUrl("");
+        TopicByIdDTO topicByIdDTO = topicByIdDTOConverter.convertToDto(topic);
+        topicByIdDTO.getUser().setAvatarUrl("");
 
-        return ResponseEntity.ok(topicDTO);
+        return ResponseEntity.ok(topicByIdDTO);
     }
 
     @PostMapping("/topics")
@@ -73,9 +78,9 @@ public class TopicsController {
     }
 
     @PutMapping("/topics/{id}")
-    public ResponseEntity<?> putTopic(@RequestBody Topic modifyTopic, @PathVariable Long id) {
+    public ResponseEntity<?> putTopic(@RequestBody String payload, @PathVariable Long id) {
         if (topicService.existsTopic(id)) {
-            Topic edited = topicService.editTopic(id, modifyTopic);
+            Topic edited = topicService.editTopic(id, payload);
             return ResponseEntity.ok(topicDTOConverter.convertToDto(edited));
         } else {
             return ResponseEntity.notFound().build();
