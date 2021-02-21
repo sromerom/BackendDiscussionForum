@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -18,28 +19,22 @@ public class Config implements WebMvcConfigurer {
     @Autowired
     TokenInterceptor tokenInterceptor;
 
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/**");
+                .addPathPatterns("/categories", "/categories/*", "/topics", "/topics/*", "/topics/*/replies", "/topics/*/replies/*", "/profile", "/getprofile", "/profile/password");
     }
 
-    @Bean
-    public FilterRegistrationBean corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:8082");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", configuration);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        return bean;
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOrigins("http://localhost:8082")
+                .allowCredentials(true);
     }
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper;
+        return new ModelMapper();
     }
 }

@@ -56,11 +56,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorJSON.toJSONString());
         }
 
-        String token = tokenService.generateNewToken(userToLogin);
-
         UserDTO userDTO = userDTOConverter.convertToDto(userService.findUserByEmail(userToLogin.getEmail()));
         userDTO.completePermissions(categoryService.findAll());
 
+        String token = tokenService.generateNewToken(userToLogin);
         JSONObject jsonLogin = new JSONObject();
 
         jsonLogin.put("user", userDTO);

@@ -11,34 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
-    private static final String[] notRequiredAuthURLs = new String[]{"/getprofile", "/login", "/register"};
+    String [] authorizationUrlByGET = new String[]{"/getprofile"};
+
     @Autowired
     TokenService tokenService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (request.getMethod().equals("OPTIONS")) return true;
         String header = request.getHeader("Authorization");
-        //System.out.println("Header: " + header);
-        /*
-        System.out.println("Metodo actual: " + request.getMethod());
-        if (request.getMethod().equals("GET") || notNeedLogin(request)) {
-            System.out.println("Hacemos expcecion...");
+
+
+        if (request.getMethod().equals("GET") && !needLogin(request)) {
             return true;
         }
 
-
-        if (header == null) {
+        if (header == null || header.equals("Bearer null")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
-        }
-         */
-        if (header == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return false;
-        }
-
-        if (header.equals("Bearer null")) {
-            return true;
         }
         try {
             String token = header.replace("Bearer ", "");
@@ -52,10 +42,10 @@ public class TokenInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean notNeedLogin(HttpServletRequest req) {
+    private boolean needLogin(HttpServletRequest req) {
         String actualURL = req.getRequestURL().toString();
 
-        for (String loginRequiredURL : notRequiredAuthURLs) {
+        for (String loginRequiredURL : authorizationUrlByGET) {
             if (actualURL.contains(loginRequiredURL)) {
                 return true;
             }

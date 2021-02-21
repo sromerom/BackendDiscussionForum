@@ -2,7 +2,6 @@ package com.liceu.sromerom.discussionforum.controllers;
 
 import com.liceu.sromerom.discussionforum.dto.TopicByIdDTO;
 import com.liceu.sromerom.discussionforum.dto.TopicDTO;
-import com.liceu.sromerom.discussionforum.dto.UserDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.ReplyDTOConverter;
 import com.liceu.sromerom.discussionforum.dto.converter.TopicByIdDTOConverter;
 import com.liceu.sromerom.discussionforum.dto.converter.TopicDTOConverter;

@@ -21,13 +21,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String generateNewToken(User user) {
         String token = JWT.create()
-                //.withSubject(user.getRole())
-                //.withSubject(String.valueOf(user.getId()))
                 .withSubject(user.getEmail())
-                //.withSubject(user.getName())
-                //.withSubject(user.getAvatarUrl())
-                //.withSubject(user.getModeratedCategories().toString())
-                //.withSubject(String.valueOf(System.currentTimeMillis() / 1000))
                 .withExpiresAt(new Date(System.currentTimeMillis() + tokenExpirationTime))
                 .sign(Algorithm.HMAC256(tokenSecret.getBytes()));
         return token;
