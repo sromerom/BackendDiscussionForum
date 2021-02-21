@@ -78,6 +78,13 @@ public class TopicServiceImpl implements TopicService{
     }
 
     @Override
+    public void newView(Long topicid) {
+        Topic topicToAddNewView = topicRepo.findById(topicid).get();
+        topicToAddNewView.setViews(topicToAddNewView.getViews() + 1);
+        topicRepo.save(topicToAddNewView);
+    }
+
+    @Override
     public boolean existsTopic(Long topicid) {
         return topicRepo.existsById(topicid);
     }

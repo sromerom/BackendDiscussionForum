@@ -17,6 +17,7 @@ public class TopicDTOConverter {
 
     public TopicDTO convertToDto(Topic topic) {
         modelMapper.typeMap(Topic.class, TopicDTO.class).addMappings(mapper -> mapper.map(src -> src.getCategory().get_id(), (dest, v) -> dest.getCategory()));
+        modelMapper.typeMap(Topic.class, TopicDTO.class).addMappings(mapper -> mapper.map(src -> src.getReplies().size(), (dest, v) -> dest.getNumberOfReplies()));
         modelMapper.addConverter(toEmpty);
         //modelMapper.addMappings(parseCategory);
         return modelMapper.map(topic, TopicDTO.class);

@@ -48,12 +48,12 @@ public class TopicsController {
         return ResponseEntity.ok(dtoList);
     }
 
-    @GetMapping("/topics/{id}")
-    public ResponseEntity<?> getTopic(@PathVariable Long id) {
-        Topic topic = topicService.findTopicById(id);
+    @GetMapping("/topics/{topicid}")
+    public ResponseEntity<?> getTopic(@PathVariable Long topicid) {
+        topicService.newView(topicid);
+        Topic topic = topicService.findTopicById(topicid);
         TopicByIdDTO topicByIdDTO = topicByIdDTOConverter.convertToDto(topic);
         topicByIdDTO.getUser().setAvatarUrl("");
-
         return ResponseEntity.ok(topicByIdDTO);
     }
 

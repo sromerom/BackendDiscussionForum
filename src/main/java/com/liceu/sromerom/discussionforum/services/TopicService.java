@@ -15,5 +15,7 @@ public interface TopicService {
     Topic editTopic(Long topicid, String payload);
 
     boolean deleteTopic(Long topicid);
+
+    void newView(Long topicid);
     boolean existsTopic(Long topicid);
 }
