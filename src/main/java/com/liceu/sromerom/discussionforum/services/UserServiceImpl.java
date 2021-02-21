@@ -3,7 +3,10 @@ package com.liceu.sromerom.discussionforum.services;
 import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTO;
 import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTO;
 import com.liceu.sromerom.discussionforum.dto.UserDTO;
+import com.liceu.sromerom.discussionforum.dto.UserRegisterDTO;
+import com.liceu.sromerom.discussionforum.entities.Category;
 import com.liceu.sromerom.discussionforum.entities.User;
+import com.liceu.sromerom.discussionforum.repos.CategoryRepo;
 import com.liceu.sromerom.discussionforum.repos.UserRepo;
 import com.liceu.sromerom.discussionforum.utils.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +14,17 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService{
 
     @Autowired
     UserRepo userRepo;
+
+    @Autowired
+    CategoryRepo categoryRepo;
 
     @Override
     public boolean existsUserByEmail(String email) {
@@ -39,12 +47,29 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean createUser(User user) {
+    public boolean createUser(UserRegisterDTO user) {
+        User userToCreate = new User();
         try {
             if(!userRepo.existsByEmail(user.getEmail())) {
                 String generatedSecuredPassword = HashUtil.generatePasswordHash(user.getPassword());
-                user.setPassword(generatedSecuredPassword);
-                User insertedUser = userRepo.save(user);
+                userToCreate.setName(user.getName());
+                userToCreate.setRole(user.getRole());
+                userToCreate.setEmail(user.getEmail());
+                userToCreate.setAvatarUrl(null);
+                userToCreate.setPassword(generatedSecuredPassword);
+
+                if (user.getModerateCategory() != null && !user.getModerateCategory().equals("")) {
+                    Category categoryToModerate = categoryRepo.findBySlug(user.getModerateCategory());
+
+                    if (userToCreate.getModeratedCategories() == null) {
+                        Set<Category> categoryToAdd = new HashSet<>();
+                        categoryToAdd.add(categoryToModerate);
+                        userToCreate.setModeratedCategories(categoryToAdd);
+                    } else {
+                        userToCreate.getModeratedCategories().add(categoryToModerate);
+                    }
+                }
+                User insertedUser = userRepo.save(userToCreate);
                 if (insertedUser != null) return true;
                 return false;
             }

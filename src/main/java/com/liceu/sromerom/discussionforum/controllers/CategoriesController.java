@@ -1,5 +1,8 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
+import com.liceu.sromerom.discussionforum.dto.CategoryDTO;
+import com.liceu.sromerom.discussionforum.dto.TopicDTO;
+import com.liceu.sromerom.discussionforum.dto.converter.CategoryDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.Category;
 import com.liceu.sromerom.discussionforum.services.CategoryService;
 import net.minidev.json.JSONObject;
@@ -9,16 +12,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class CategoriesController {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    CategoryDTOConverter categoryDTOConverter;
+
     @GetMapping("/categories")
     public ResponseEntity<?> categories() {
         List<Category> result = categoryService.findAll();
-        return ResponseEntity.ok(result);
+        List<CategoryDTO> dtoList = result.stream()
+                .map(categoryDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/categories/{slug}")
