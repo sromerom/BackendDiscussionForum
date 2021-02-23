@@ -2,19 +2,21 @@ package com.liceu.sromerom.discussionforum.services;
 
 import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTO;
 import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTO;
-import com.liceu.sromerom.discussionforum.dto.UserDTO;
 import com.liceu.sromerom.discussionforum.dto.UserRegisterDTO;
 import com.liceu.sromerom.discussionforum.entities.Category;
+import com.liceu.sromerom.discussionforum.entities.Image;
 import com.liceu.sromerom.discussionforum.entities.User;
 import com.liceu.sromerom.discussionforum.repos.CategoryRepo;
+import com.liceu.sromerom.discussionforum.repos.ImageRepo;
 import com.liceu.sromerom.discussionforum.repos.UserRepo;
 import com.liceu.sromerom.discussionforum.utils.HashUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -25,6 +27,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     CategoryRepo categoryRepo;
+
+    @Autowired
+    ImageRepo imageRepo;
 
     @Override
     public boolean existsUserByEmail(String email) {
@@ -55,7 +60,7 @@ public class UserServiceImpl implements UserService{
                 userToCreate.setName(user.getName());
                 userToCreate.setRole(user.getRole());
                 userToCreate.setEmail(user.getEmail());
-                userToCreate.setAvatarUrl(null);
+                userToCreate.setAvatar(null);
                 userToCreate.setPassword(generatedSecuredPassword);
 
                 if (user.getModerateCategory() != null && !user.getModerateCategory().equals("")) {
@@ -90,9 +95,22 @@ public class UserServiceImpl implements UserService{
         User userToEdit = userRepo.findByEmail(email);
         userToEdit.setEmail(editProfileUserDTO.getEmail());
         userToEdit.setName(editProfileUserDTO.getName());
+        Charset charset = StandardCharsets.US_ASCII;
 
         if (editProfileUserDTO.getAvatar() != null) {
-            userToEdit.setAvatarUrl(editProfileUserDTO.getAvatar());
+
+            if (userToEdit.getAvatar() != null) {
+                System.out.println("Entramos a borrar!!");
+                Image imageToDelete = userToEdit.getAvatar();
+                imageRepo.delete(imageToDelete);
+            }
+            Image newImage = new Image();
+            newImage.setName(generateAlphanumericString());
+            newImage.setPhoto(charset.encode(editProfileUserDTO.getAvatar()).array());
+            newImage.setUser(userToEdit);
+            imageRepo.save(newImage);
+            userToEdit.setAvatar(newImage);
+            //userToEdit.setAvatarUrl(editProfileUserDTO.getAvatar());
         }
 
         return userRepo.save(userToEdit);
@@ -116,5 +134,27 @@ public class UserServiceImpl implements UserService{
             e.printStackTrace();
         }
         return false;
+    }
+
+    private String generateAlphanumericString() {
+        int leftLimit = 48; // numeral '0'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 15;
+        Random random = new Random();
+
+        String generatedString = null;
+
+
+        while (generatedString == null) {
+            generatedString = random.ints(leftLimit, rightLimit + 1)
+                    .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                    .limit(targetStringLength)
+                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                    .toString();
+
+            if (imageRepo.existsByName(generatedString)) generatedString = null;
+            System.out.println(generatedString);
+        }
+        return generatedString;
     }
 }

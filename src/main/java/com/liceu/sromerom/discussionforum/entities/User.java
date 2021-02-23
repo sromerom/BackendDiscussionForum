@@ -26,8 +26,10 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String avatarUrl;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE, orphanRemoval = true)
+    //@PrimaryKeyJoinColumn
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Image avatar;
 
     //@Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -85,12 +87,12 @@ public class User {
         this.name = name;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public Image getAvatar() {
+        return avatar;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatar(Image avatarUrl) {
+        this.avatar = avatarUrl;
     }
 
     public String getRole() {
