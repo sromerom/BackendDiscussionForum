@@ -7,6 +7,7 @@ public class ReplyDTO {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long topic;
     private UserDTO user;
     private Long _id;
 
@@ -26,16 +27,6 @@ public class ReplyDTO {
         this.createdAt = createdAt;
     }
 
-    /*
-    public Long getTopic() {
-        return topic;
-    }
-
-    public void setTopic(Long topic) {
-        this.topic = topic;
-    }
-
-     */
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
@@ -58,5 +49,13 @@ public class ReplyDTO {
 
     public void set_id(Long _id) {
         this._id = _id;
+    }
+
+    public Long getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Long topic) {
+        this.topic = topic;
     }
 }

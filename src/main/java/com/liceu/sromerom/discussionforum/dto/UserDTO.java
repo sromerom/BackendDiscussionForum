@@ -3,14 +3,9 @@ package com.liceu.sromerom.discussionforum.dto;
 
 import com.liceu.sromerom.discussionforum.entities.Category;
 import com.liceu.sromerom.discussionforum.entities.User;
-import com.liceu.sromerom.discussionforum.services.CategoryService;
-import com.liceu.sromerom.discussionforum.services.UserService;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class UserDTO {

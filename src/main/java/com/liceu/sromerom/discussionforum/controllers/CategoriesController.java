@@ -1,7 +1,6 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
 import com.liceu.sromerom.discussionforum.dto.CategoryDTO;
-import com.liceu.sromerom.discussionforum.dto.TopicDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.CategoryDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.Category;
 import com.liceu.sromerom.discussionforum.services.CategoryService;
@@ -34,7 +33,7 @@ public class CategoriesController {
     @GetMapping("/categories/{slug}")
     public ResponseEntity<?> getCategory(@PathVariable String slug) {
         if (categoryService.existsCategoryBySlug(slug)) {
-            return ResponseEntity.ok(categoryService.findBySlug(slug));
+            return ResponseEntity.ok(categoryDTOConverter.convertToDTO(categoryService.findBySlug(slug)));
         } else {
             return ResponseEntity.noContent().build();
         }
@@ -47,7 +46,7 @@ public class CategoriesController {
         String message;
         JSONObject json = new JSONObject();
         if (categoryCreated != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(categoryCreated);
+            return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTOConverter.convertToDTO(categoryCreated));
         } else {
             json.put("message", "error");
             message = json.toJSONString();
@@ -58,7 +57,7 @@ public class CategoriesController {
     @PutMapping("/categories/{slug}")
     public ResponseEntity<?> putCategories(@RequestBody Category modifyCategory, @PathVariable String slug) {
         if (categoryService.existsCategoryBySlug(slug)) {
-            return ResponseEntity.ok(categoryService.editCategory(slug, modifyCategory));
+            return ResponseEntity.ok(categoryDTOConverter.convertToDTO(categoryService.editCategory(slug, modifyCategory)));
         } else {
             return ResponseEntity.notFound().build();
         }

@@ -26,7 +26,7 @@ public class RepliesController {
     @PostMapping("/topics/{topicId}/replies")
     public ResponseEntity<?> postReplies(@RequestBody ReplyDTO replyDTO, @PathVariable Long topicId, @RequestAttribute String user) {
 
-        if (user != null || user == "") {
+        if (user != null || user.equals("")) {
             Reply replyCreated = replyService.createReply(user, topicId, replyDTO);
             String message;
             JSONObject json = new JSONObject();

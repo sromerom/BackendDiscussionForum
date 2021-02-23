@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +33,8 @@ public class CategoryDTOConverter {
     Converter<Set<User>, List<Long>> parseModerators = new AbstractConverter<>() {
         @Override
         protected List<Long> convert(Set<User> users) {
-            return users.stream().map(user -> user.get_id()).collect(Collectors.toList());
+            if (users == null) return new ArrayList<>();
+            return users.stream().map(User::get_id).collect(Collectors.toList());
         }
     };
 }

@@ -21,7 +21,8 @@ public class Category {
     private String color;
 
     //Relationship Category-User (N-M)
-    @ManyToMany(mappedBy = "moderatedCategories")
+    @ManyToMany(mappedBy = "moderatedCategories", cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<User> moderators;
 
     //Relationship Category-Topic (1-N)

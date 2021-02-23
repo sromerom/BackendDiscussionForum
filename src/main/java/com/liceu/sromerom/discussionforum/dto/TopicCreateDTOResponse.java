@@ -1,24 +1,22 @@
 package com.liceu.sromerom.discussionforum.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class TopicByIdDTO {
-    private CategoryDTO category;
+public class TopicCreateDTOResponse {
+    private Long category;
     private String content;
     private LocalDateTime createdAt;
     private Long _id;
-    private List<ReplyDTO> replies;
     private String title;
     private LocalDateTime updatedAt;
-    private UserDTO user;
+    private Long user;
     private Integer views;
 
-    public CategoryDTO getCategory() {
+    public Long getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryDTO category) {
+    public void setCategory(Long category) {
         this.category = category;
     }
 
@@ -46,14 +44,6 @@ public class TopicByIdDTO {
         this._id = _id;
     }
 
-    public List<ReplyDTO> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(List<ReplyDTO> replies) {
-        this.replies = replies;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -70,11 +60,11 @@ public class TopicByIdDTO {
         this.updatedAt = updatedAt;
     }
 
-    public UserDTO getUser() {
+    public Long getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(Long user) {
         this.user = user;
     }
 

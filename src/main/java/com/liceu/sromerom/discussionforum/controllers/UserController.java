@@ -70,50 +70,39 @@ public class UserController {
 
     @PutMapping("/profile")
     public ResponseEntity<?> editProfile(@RequestAttribute String user, @RequestBody EditProfileUserDTO editProfileUserDTO) {
-        if (user != null && user != "") {
-            if (userService.existsUserByEmail(user)) {
-                UserDTO userDTO = userDTOConverter.convertToDto(userService.editProfile(user, editProfileUserDTO));
-                userDTO.completePermissions(categoryService.findAll());
-                String token = tokenService.generateNewToken(userService.findUserByEmail(userDTO.getEmail()));
-                JSONObject jsonLogin = new JSONObject();
-                jsonLogin.put("user", userDTO);
-                jsonLogin.put("token", token);
+        if (userService.existsUserByEmail(user)) {
+            UserDTO userDTO = userDTOConverter.convertToDto(userService.editProfile(user, editProfileUserDTO));
+            userDTO.completePermissions(categoryService.findAll());
+            String token = tokenService.generateNewToken(userService.findUserByEmail(userDTO.getEmail()));
+            JSONObject jsonLogin = new JSONObject();
+            jsonLogin.put("user", userDTO);
+            jsonLogin.put("token", token);
 
-                return ResponseEntity.ok(jsonLogin);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            return ResponseEntity.ok(jsonLogin);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/profile/password")
     public ResponseEntity<?> editPassword(@RequestAttribute String user, @RequestBody EditPasswordUserDTO editPasswordUserDTO) {
-        if (user != null && user != "") {
-            if (userService.existsUserByEmail(user)) {
-                boolean passwordChanged = userService.editPasswordProfile(user, editPasswordUserDTO);
-                if (passwordChanged) return ResponseEntity.ok(true);
-            }
-
-            JSONObject json = new JSONObject();
-            json.put("message", "Your current password is wrong");
-            String message = json.toJSONString();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+        if (userService.existsUserByEmail(user)) {
+            boolean passwordChanged = userService.editPasswordProfile(user, editPasswordUserDTO);
+            if (passwordChanged) return ResponseEntity.ok(true);
         }
-        return ResponseEntity.notFound().build();
+
+        JSONObject json = new JSONObject();
+        json.put("message", "Your current password is wrong");
+        String message = json.toJSONString();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 
     @GetMapping("/getprofile")
     public ResponseEntity<?> getProfile(@RequestAttribute String user) {
-        if (user != null && user != "") {
-            User getInfoProfile = userService.findUserByEmail(user);
-            UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
-            userDTO.completePermissions(categoryService.findAll());
-            return ResponseEntity.ok(userDTO);
-
-        }
-
-        return ResponseEntity.notFound().build();
+        User getInfoProfile = userService.findUserByEmail(user);
+        UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
+        userDTO.completePermissions(categoryService.findAll());
+        return ResponseEntity.ok(userDTO);
     }
 
 

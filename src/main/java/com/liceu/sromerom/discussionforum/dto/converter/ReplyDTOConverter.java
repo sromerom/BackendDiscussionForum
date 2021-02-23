@@ -1,9 +1,7 @@
 package com.liceu.sromerom.discussionforum.dto.converter;
 
 import com.liceu.sromerom.discussionforum.dto.ReplyDTO;
-import com.liceu.sromerom.discussionforum.dto.TopicDTO;
 import com.liceu.sromerom.discussionforum.entities.Reply;
-import com.liceu.sromerom.discussionforum.entities.Topic;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -17,7 +15,8 @@ public class ReplyDTOConverter {
     ModelMapper modelMapper;
 
     public ReplyDTO convertToDto(Reply reply) {
-        //modelMapper.typeMap(Reply.class, ReplyDTO.class).addMappings(mapper -> mapper.map(src -> src.getTopic().get_id(), (dest, v) -> dest.getTopic()));
+        System.out.println("Mapeando ReplyDTO");
+        modelMapper.typeMap(Reply.class, ReplyDTO.class).addMappings(mapper -> mapper.map(src -> src.getTopic().get_id(), (dest, v) -> dest.getTopic()));
         modelMapper.addConverter(toEmpty);
         return modelMapper.map(reply, ReplyDTO.class);
     }

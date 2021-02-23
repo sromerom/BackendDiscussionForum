@@ -22,15 +22,21 @@ public class TokenInterceptor implements HandlerInterceptor {
         String header = request.getHeader("Authorization");
 
 
+
         if (request.getMethod().equals("GET") && !needLogin(request)) {
+            System.out.println("No hace falta autentificacion");
             return true;
         }
 
         if (header == null || header.equals("Bearer null")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            System.out.println("Intenta hacer un request que require de token y no se ha encontrado. UNAUTHORIZED");
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "Unauthorized");
             return false;
         }
         try {
+            System.out.println("Todo correcto!");
             String token = header.replace("Bearer ", "");
             String user = tokenService.getSubject(token);
             request.setAttribute("user", user);
