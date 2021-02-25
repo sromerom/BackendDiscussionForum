@@ -76,6 +76,7 @@
     </dependencies>
 
     <build>
+        <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -83,11 +84,11 @@
             </plugin>
         </plugins>
         <!-- Loading all ${} -->
+        <!--
         <filters>
             <filter>src/main/props/config.${env}.properties</filter>
         </filters>
 
-        <!-- Map ${} into resources -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -97,6 +98,7 @@
                 </includes>
             </resource>
         </resources>
+        -->
     </build>
 
 </project>

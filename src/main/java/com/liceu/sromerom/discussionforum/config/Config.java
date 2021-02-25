@@ -29,7 +29,7 @@ public class Config implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedOrigins("http://localhost:8082")
+                .allowedOrigins("http://localhost:8080")
                 .allowCredentials(true);
     }
 
