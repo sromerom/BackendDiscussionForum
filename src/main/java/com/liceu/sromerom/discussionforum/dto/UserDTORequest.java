@@ -1,6 +1,6 @@
 package com.liceu.sromerom.discussionforum.dto;
 
-public class UserRegisterDTO {
+public class UserDTORequest {
     private String email;
     private String moderateCategory;
     private String name;

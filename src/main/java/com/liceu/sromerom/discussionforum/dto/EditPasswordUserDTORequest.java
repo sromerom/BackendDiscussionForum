@@ -1,6 +1,6 @@
 package com.liceu.sromerom.discussionforum.dto;
 
-public class EditPasswordUserDTO {
+public class EditPasswordUserDTORequest {
     private String currentPassword;
     private String newPassword;
 

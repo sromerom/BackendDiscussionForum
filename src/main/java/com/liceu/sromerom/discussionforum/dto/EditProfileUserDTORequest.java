@@ -1,6 +1,6 @@
 package com.liceu.sromerom.discussionforum.dto;
 
-public class EditProfileUserDTO {
+public class EditProfileUserDTORequest {
     private String avatar;
     private String email;
     private String name;

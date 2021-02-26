@@ -1,8 +1,8 @@
 package com.liceu.sromerom.discussionforum.services;
 
-import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTO;
-import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTO;
-import com.liceu.sromerom.discussionforum.dto.UserRegisterDTO;
+import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTORequest;
+import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTORequest;
+import com.liceu.sromerom.discussionforum.dto.UserDTORequest;
 import com.liceu.sromerom.discussionforum.entities.Category;
 import com.liceu.sromerom.discussionforum.entities.Image;
 import com.liceu.sromerom.discussionforum.entities.User;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean validateUser(User userToValidate) {
+    public boolean validateUser(UserDTORequest userToValidate) {
         try {
             User existsUserWithEmail = userRepo.findByEmail(userToValidate.getEmail());
             if (userRepo.existsByEmail(userToValidate.getEmail()) && existsUserWithEmail != null && userToValidate.getPassword() != null) {
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean createUser(UserRegisterDTO user) {
+    public boolean createUser(UserDTORequest user) {
         User userToCreate = new User();
         try {
             if(!userRepo.existsByEmail(user.getEmail())) {
@@ -91,13 +91,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User editProfile(String email, EditProfileUserDTO editProfileUserDTO) {
+    public User editProfile(String email, EditProfileUserDTORequest editProfileUserDTORequest) {
         User userToEdit = userRepo.findByEmail(email);
-        userToEdit.setEmail(editProfileUserDTO.getEmail());
-        userToEdit.setName(editProfileUserDTO.getName());
+        userToEdit.setEmail(editProfileUserDTORequest.getEmail());
+        userToEdit.setName(editProfileUserDTORequest.getName());
         Charset charset = StandardCharsets.US_ASCII;
 
-        if (editProfileUserDTO.getAvatar() != null) {
+        if (editProfileUserDTORequest.getAvatar() != null) {
 
             if (userToEdit.getAvatar() != null) {
                 System.out.println("Entramos a borrar!!");
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService{
             }
             Image newImage = new Image();
             newImage.setName(generateAlphanumericString());
-            newImage.setPhoto(charset.encode(editProfileUserDTO.getAvatar()).array());
+            newImage.setPhoto(charset.encode(editProfileUserDTORequest.getAvatar()).array());
             newImage.setUser(userToEdit);
             imageRepo.save(newImage);
             userToEdit.setAvatar(newImage);
@@ -117,15 +117,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean editPasswordProfile(String email, EditPasswordUserDTO editPasswordUserDTO) {
+    public boolean editPasswordProfile(String email, EditPasswordUserDTORequest editPasswordUserDTORequest) {
         try {
-            User userToCheck = new User();
-            userToCheck.setPassword(editPasswordUserDTO.getCurrentPassword());
-            userToCheck.setEmail(email);
 
-            if (validateUser(userToCheck)) {
+            UserDTORequest userDTORequest = new UserDTORequest();
+            userDTORequest.setPassword(editPasswordUserDTORequest.getCurrentPassword());
+            userDTORequest.setEmail(email);
+
+            if (validateUser(userDTORequest)) {
                 User userToEditPassword = userRepo.findByEmail(email);
-                String generatedSecuredPassword = HashUtil.generatePasswordHash(editPasswordUserDTO.getNewPassword());
+                String generatedSecuredPassword = HashUtil.generatePasswordHash(editPasswordUserDTORequest.getNewPassword());
                 userToEditPassword.setPassword(generatedSecuredPassword);
                 User insertedUser = userRepo.save(userToEditPassword);
                 if (insertedUser != null) return true;

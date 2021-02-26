@@ -1,10 +1,13 @@
 package com.liceu.sromerom.discussionforum.services;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.google.gson.Gson;
+import com.liceu.sromerom.discussionforum.dto.TopicDTORequest;
 import com.liceu.sromerom.discussionforum.entities.Topic;
 import com.liceu.sromerom.discussionforum.repos.CategoryRepo;
 import com.liceu.sromerom.discussionforum.repos.TopicRepo;
 import com.liceu.sromerom.discussionforum.repos.UserRepo;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class TopicServiceImpl implements TopicService{
+public class TopicServiceImpl implements TopicService {
 
     @Autowired
     TopicRepo topicRepo;
@@ -32,7 +35,7 @@ public class TopicServiceImpl implements TopicService{
 
     @Override
     public List<Topic> findByCategory(String slug) {
-       return topicRepo.findByCategory_Slug(slug);
+        return topicRepo.findByCategory_Slug(slug);
     }
 
     @Override
@@ -41,30 +44,25 @@ public class TopicServiceImpl implements TopicService{
     }
 
     @Override
-    public Topic createTopic(String email, String payload) {
-        Gson gson = new Gson();
-        Map<String, String> payloadMap = gson.fromJson(payload, HashMap.class);
-
+    public Topic createTopic(String email, TopicDTORequest topicDTORequest) {
         Topic topicToCreate = new Topic();
-        topicToCreate.setTitle(payloadMap.get("title"));
-        topicToCreate.setContent(payloadMap.get("content"));
+        topicToCreate.setTitle(topicDTORequest.getTitle());
+        topicToCreate.setContent(topicDTORequest.getContent());
         topicToCreate.setViews(0);
         topicToCreate.setCreatedAt(LocalDateTime.now());
         topicToCreate.setUpdatedAt(LocalDateTime.now());
-        topicToCreate.setCategory(categoryRepo.findBySlug(payloadMap.get("category")));
+        topicToCreate.setCategory(categoryRepo.findBySlug(topicDTORequest.getCategory()));
         topicToCreate.setUser(userRepo.findByEmail(email));
-
         return topicRepo.save(topicToCreate);
     }
 
     @Override
-    public Topic editTopic(Long topicid, String payload) {
-        Gson gson = new Gson();
-        Map<String, String> payloadMap = gson.fromJson(payload, HashMap.class);
+    public Topic editTopic(Long topicid, TopicDTORequest topicDTORequest) {
+
         Topic topicToEdit = topicRepo.findById(topicid).get();
-        topicToEdit.setTitle(payloadMap.get("title"));
-        topicToEdit.setContent(payloadMap.get("content"));
-        topicToEdit.setCategory(categoryRepo.findBySlug(payloadMap.get("category")));
+        topicToEdit.setTitle(topicDTORequest.getTitle());
+        topicToEdit.setContent(topicDTORequest.getContent());
+        topicToEdit.setCategory(categoryRepo.findBySlug(topicDTORequest.getCategory()));
         return topicRepo.save(topicToEdit);
     }
 
@@ -87,5 +85,23 @@ public class TopicServiceImpl implements TopicService{
     @Override
     public boolean existsTopic(Long topicid) {
         return topicRepo.existsById(topicid);
+    }
+
+    @Override
+    public boolean userCanCRUDTopics(Long topicid, Map<String, Claim> userClaim) {
+        Topic topic = topicRepo.findById(topicid).get();
+
+        if (topic.getUser().get_id().equals(userClaim.get("_id").asLong())) {
+            System.out.println("Es su propio topico!!");
+            return true;
+        }
+
+        String role = userClaim.get("role").asString();
+
+        JSONObject permissions = userClaim.get("permissions").as(JSONObject.class);
+        if (permissions.get("categories").equals("") || permissions.get("categories") == null || permissions.size() == 0 || role.equals("user")) return false;
+        Map<String, Object> categoriesMap = (Map<String, Object>) permissions.get("categories");
+        boolean permissionInCurrentCategory = categoriesMap.containsKey(topic.getCategory().getSlug());
+        return permissionInCurrentCategory && role.equals("admin") || role.equals("moderator");
     }
 }

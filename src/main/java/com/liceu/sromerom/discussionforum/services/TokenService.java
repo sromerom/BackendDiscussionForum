@@ -1,8 +1,11 @@
 package com.liceu.sromerom.discussionforum.services;
 
-import com.liceu.sromerom.discussionforum.entities.User;
+import com.auth0.jwt.interfaces.Claim;
+import com.liceu.sromerom.discussionforum.dto.UserDTO;
+
+import java.util.Map;
 
 public interface TokenService {
-    String generateNewToken(User user);
-    String getSubject(String token);
+    String generateNewToken(UserDTO user);
+    Map<String, Claim> getSubject(String token);
 }

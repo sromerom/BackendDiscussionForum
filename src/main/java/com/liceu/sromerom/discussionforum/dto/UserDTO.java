@@ -104,4 +104,16 @@ public class UserDTO {
     public void setPermissions(JSONObject permissions) {
         this.permissions = permissions;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "_id=" + _id +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", role='" + role + '\'' +
+                ", permissions=" + permissions +
+                '}';
+    }
 }

@@ -1,19 +1,18 @@
 package com.liceu.sromerom.discussionforum.services;
 
 
-import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTO;
-import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTO;
-import com.liceu.sromerom.discussionforum.dto.UserDTO;
-import com.liceu.sromerom.discussionforum.dto.UserRegisterDTO;
+import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTORequest;
+import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTORequest;
+import com.liceu.sromerom.discussionforum.dto.UserDTORequest;
 import com.liceu.sromerom.discussionforum.entities.User;
 
 public interface UserService {
 
     boolean existsUserByEmail(String email);
-    boolean validateUser(User user);
-    boolean createUser(UserRegisterDTO user);
+    boolean validateUser(UserDTORequest user);
+    boolean createUser(UserDTORequest user);
     User findUserByEmail(String email);
-    User editProfile(String email, EditProfileUserDTO editProfileUserDTO);
+    User editProfile(String email, EditProfileUserDTORequest editProfileUserDTORequest);
 
-    boolean editPasswordProfile(String email, EditPasswordUserDTO editPasswordUserDTO);
+    boolean editPasswordProfile(String email, EditPasswordUserDTORequest editPasswordUserDTORequest);
 }

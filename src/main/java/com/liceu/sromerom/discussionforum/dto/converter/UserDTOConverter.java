@@ -9,6 +9,7 @@ import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,6 +19,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UserDTOConverter {
     @Autowired
     ModelMapper modelMapper;
+
+    @Value("${backend.scheme}")
+    String scheme;
+
+    @Value("${backend.host}")
+    String host;
+
 
     public UserDTO convertToDto(User user) {
         modelMapper.typeMap(User.class, UserDTO.class).addMappings(mapper -> mapper.map(src -> src.getAvatar(), (dest, v) -> dest.getAvatarUrl()));
@@ -39,11 +47,10 @@ public class UserDTOConverter {
             if (image == null) return "";
             UriComponents uriComponents = UriComponentsBuilder
                     .newInstance()
-                    .scheme("http")
-                    .host("localhost:8080")
+                    .scheme(scheme)
+                    .host(host)
                     .path("/images/" + image.getName())
                     .build();
-
             return uriComponents.toString();
         }
     };

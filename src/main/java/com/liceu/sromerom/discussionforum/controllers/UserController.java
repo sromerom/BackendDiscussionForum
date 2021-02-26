@@ -1,9 +1,10 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
-import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTO;
-import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTO;
+import com.auth0.jwt.interfaces.Claim;
+import com.liceu.sromerom.discussionforum.dto.EditPasswordUserDTORequest;
+import com.liceu.sromerom.discussionforum.dto.EditProfileUserDTORequest;
 import com.liceu.sromerom.discussionforum.dto.UserDTO;
-import com.liceu.sromerom.discussionforum.dto.UserRegisterDTO;
+import com.liceu.sromerom.discussionforum.dto.UserDTORequest;
 import com.liceu.sromerom.discussionforum.dto.converter.UserDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.User;
 import com.liceu.sromerom.discussionforum.services.CategoryService;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -32,7 +35,7 @@ public class UserController {
     UserDTOConverter userDTOConverter;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegisterDTO newUser) {
+    public ResponseEntity<?> register(@RequestBody UserDTORequest newUser) {
         System.out.println(newUser);
         boolean userCreated = userService.createUser(newUser);
         String message;
@@ -49,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User userToLogin) {
+    public ResponseEntity<?> login(@RequestBody UserDTORequest userToLogin) {
         if (!userService.validateUser(userToLogin)) {
             JSONObject errorJSON = new JSONObject();
             errorJSON.put("message", "Incorrect email or password.");
@@ -59,7 +62,7 @@ public class UserController {
         UserDTO userDTO = userDTOConverter.convertToDto(userService.findUserByEmail(userToLogin.getEmail()));
         userDTO.completePermissions(categoryService.findAll());
 
-        String token = tokenService.generateNewToken(userToLogin);
+        String token = tokenService.generateNewToken(userDTO);
         JSONObject jsonLogin = new JSONObject();
 
         jsonLogin.put("user", userDTO);
@@ -69,11 +72,12 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<?> editProfile(@RequestAttribute String user, @RequestBody EditProfileUserDTO editProfileUserDTO) {
-        if (userService.existsUserByEmail(user)) {
-            UserDTO userDTO = userDTOConverter.convertToDto(userService.editProfile(user, editProfileUserDTO));
+    public ResponseEntity<?> editProfile(@RequestAttribute Map<String, Claim> user, @RequestBody EditProfileUserDTORequest editProfileUserDTORequest) {
+        String userEmail = user.get("email").asString();
+        if (userService.existsUserByEmail(userEmail)) {
+            UserDTO userDTO = userDTOConverter.convertToDto(userService.editProfile(userEmail, editProfileUserDTORequest));
             userDTO.completePermissions(categoryService.findAll());
-            String token = tokenService.generateNewToken(userService.findUserByEmail(userDTO.getEmail()));
+            String token = tokenService.generateNewToken(userDTO);
             JSONObject jsonLogin = new JSONObject();
             jsonLogin.put("user", userDTO);
             jsonLogin.put("token", token);
@@ -85,9 +89,10 @@ public class UserController {
     }
 
     @PutMapping("/profile/password")
-    public ResponseEntity<?> editPassword(@RequestAttribute String user, @RequestBody EditPasswordUserDTO editPasswordUserDTO) {
-        if (userService.existsUserByEmail(user)) {
-            boolean passwordChanged = userService.editPasswordProfile(user, editPasswordUserDTO);
+    public ResponseEntity<?> editPassword(@RequestAttribute Map<String, Claim> user, @RequestBody EditPasswordUserDTORequest editPasswordUserDTORequest) {
+        String userEmail = user.get("email").asString();
+        if (userService.existsUserByEmail(userEmail)) {
+            boolean passwordChanged = userService.editPasswordProfile(userEmail, editPasswordUserDTORequest);
             if (passwordChanged) return ResponseEntity.ok(true);
         }
 
@@ -98,8 +103,9 @@ public class UserController {
     }
 
     @GetMapping("/getprofile")
-    public ResponseEntity<?> getProfile(@RequestAttribute String user) {
-        User getInfoProfile = userService.findUserByEmail(user);
+    public ResponseEntity<?> getProfile(@RequestAttribute Map<String, Claim> user) {
+        String userEmail = user.get("email").asString();
+        User getInfoProfile = userService.findUserByEmail(userEmail);
         UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
         userDTO.completePermissions(categoryService.findAll());
         return ResponseEntity.ok(userDTO);

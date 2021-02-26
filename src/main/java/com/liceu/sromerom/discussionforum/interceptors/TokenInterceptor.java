@@ -1,5 +1,6 @@
 package com.liceu.sromerom.discussionforum.interceptors;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.liceu.sromerom.discussionforum.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -7,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
@@ -38,11 +40,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         try {
             System.out.println("Todo correcto!");
             String token = header.replace("Bearer ", "");
-            String user = tokenService.getSubject(token);
-            request.setAttribute("user", user);
+            Map<String, Claim> claimUser = tokenService.getSubject(token);
+            //System.out.println("Email del claim!!! " + claimUser.get("email").as(String.class));
+            request.setAttribute("user", claimUser);
         } catch (Exception e) {
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "Unauthorized");
             return false;
         }
         return true;

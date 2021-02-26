@@ -1,5 +1,6 @@
 package com.liceu.sromerom.discussionforum.controllers;
 
+import com.auth0.jwt.interfaces.Claim;
 import com.liceu.sromerom.discussionforum.dto.CategoryDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.CategoryDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.Category;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,35 +42,47 @@ public class CategoriesController {
     }
 
     @PostMapping("/categories")
-    public ResponseEntity<?> postCategories(@RequestBody Category newCategory) {
-        System.out.println(newCategory);
-        Category categoryCreated = categoryService.createCategory(newCategory);
+    public ResponseEntity<?> postCategories(@RequestBody CategoryDTO newCategory, @RequestAttribute Map<String, Claim> user) {
         String message;
         JSONObject json = new JSONObject();
-        if (categoryCreated != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTOConverter.convertToDTO(categoryCreated));
-        } else {
-            json.put("message", "error");
-            message = json.toJSONString();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+        if (categoryService.userCanCRUDCategory(user)) {
+            Category categoryCreated = categoryService.createCategory(newCategory);
+            if (categoryCreated != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(categoryDTOConverter.convertToDTO(categoryCreated));
+            } else {
+                json.put("message", "error");
+                message = json.toJSONString();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            }
         }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
     @PutMapping("/categories/{slug}")
-    public ResponseEntity<?> putCategories(@RequestBody Category modifyCategory, @PathVariable String slug) {
-        if (categoryService.existsCategoryBySlug(slug)) {
-            return ResponseEntity.ok(categoryDTOConverter.convertToDTO(categoryService.editCategory(slug, modifyCategory)));
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> putCategories(@RequestBody CategoryDTO modifyCategory, @PathVariable String slug, @RequestAttribute Map<String, Claim> user) {
+
+        if (categoryService.userCanCRUDCategory(user) && categoryService.userHavePermissionInCategory(user, slug)) {
+            if (categoryService.existsCategoryBySlug(slug)) {
+                return ResponseEntity.ok(categoryDTOConverter.convertToDTO(categoryService.editCategory(slug, modifyCategory)));
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
     @DeleteMapping("/categories/{slug}")
-    public ResponseEntity<?> deleteCategories(@PathVariable String slug) {
-        if (categoryService.existsCategoryBySlug(slug)) {
-            return ResponseEntity.ok(categoryService.deleteCategory(slug));
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> deleteCategories(@PathVariable String slug, @RequestAttribute Map<String, Claim> user) {
+
+        if (categoryService.userCanCRUDCategory(user) && categoryService.userHavePermissionInCategory(user, slug)) {
+            if (categoryService.existsCategoryBySlug(slug)) {
+                return ResponseEntity.ok(categoryService.deleteCategory(slug));
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 }
