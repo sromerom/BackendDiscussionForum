@@ -23,28 +23,25 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (request.getMethod().equals("OPTIONS")) return true;
         String header = request.getHeader("Authorization");
 
-
-
+        //No fa falta autentificació, token jwt
         if (request.getMethod().equals("GET") && !needLogin(request)) {
-            System.out.println("No hace falta autentificacion");
             return true;
         }
 
+        //Es fa un request a un recurs que necessita token y no s'ha trobat
         if (header == null || header.equals("Bearer null")) {
-            System.out.println("Intenta hacer un request que require de token y no se ha encontrado. UNAUTHORIZED");
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
                     "Unauthorized");
             return false;
         }
+
+        //S'ha trobat correctament el token, es procedeix a aconseguir el subject d'aquest
         try {
-            System.out.println("Todo correcto!");
             String token = header.replace("Bearer ", "");
             Map<String, Claim> claimUser = tokenService.getSubject(token);
-            //System.out.println("Email del claim!!! " + claimUser.get("email").as(String.class));
             request.setAttribute("user", claimUser);
         } catch (Exception e) {
-            e.printStackTrace();
             response.sendError(
                     HttpServletResponse.SC_UNAUTHORIZED,
                     "Unauthorized");
@@ -61,7 +58,6 @@ public class TokenInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-
         return false;
     }
 }

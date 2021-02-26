@@ -36,7 +36,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDTORequest newUser) {
-        System.out.println(newUser);
         boolean userCreated = userService.createUser(newUser);
         String message;
         JSONObject json = new JSONObject();
@@ -60,6 +59,7 @@ public class UserController {
         }
 
         UserDTO userDTO = userDTOConverter.convertToDto(userService.findUserByEmail(userToLogin.getEmail()));
+        //Completam el permissos segons el role d'usuari registrat
         userDTO.completePermissions(categoryService.findAll());
 
         String token = tokenService.generateNewToken(userDTO);
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<?> editProfile(@RequestAttribute Map<String, Claim> user, @RequestBody EditProfileUserDTORequest editProfileUserDTORequest) {
+    public ResponseEntity<?> editProfile(@RequestBody EditProfileUserDTORequest editProfileUserDTORequest, @RequestAttribute Map<String, Claim> user) {
         String userEmail = user.get("email").asString();
         if (userService.existsUserByEmail(userEmail)) {
             UserDTO userDTO = userDTOConverter.convertToDto(userService.editProfile(userEmail, editProfileUserDTORequest));
@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @PutMapping("/profile/password")
-    public ResponseEntity<?> editPassword(@RequestAttribute Map<String, Claim> user, @RequestBody EditPasswordUserDTORequest editPasswordUserDTORequest) {
+    public ResponseEntity<?> editPassword(@RequestBody EditPasswordUserDTORequest editPasswordUserDTORequest, @RequestAttribute Map<String, Claim> user) {
         String userEmail = user.get("email").asString();
         if (userService.existsUserByEmail(userEmail)) {
             boolean passwordChanged = userService.editPasswordProfile(userEmail, editPasswordUserDTORequest);
@@ -107,6 +107,7 @@ public class UserController {
         String userEmail = user.get("email").asString();
         User getInfoProfile = userService.findUserByEmail(userEmail);
         UserDTO userDTO = userDTOConverter.convertToDto(getInfoProfile);
+        //Completam el permissos segons el role d'usuari
         userDTO.completePermissions(categoryService.findAll());
         return ResponseEntity.ok(userDTO);
     }

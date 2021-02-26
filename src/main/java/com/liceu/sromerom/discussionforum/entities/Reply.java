@@ -35,6 +35,7 @@ public class Reply {
     private Topic topic;
 
 
+    //getters and setters
     public Long get_id() {
         return _id;
     }
@@ -67,7 +68,6 @@ public class Reply {
         this.updatedAt = updatedAt;
     }
 
-    //@JsonBackReference(value = "replyOwner")
     public User getUser() {
         return user;
     }
@@ -76,7 +76,6 @@ public class Reply {
         this.user = replyOwner;
     }
 
-    //@JsonBackReference
     public Topic getTopic() {
         return topic;
     }

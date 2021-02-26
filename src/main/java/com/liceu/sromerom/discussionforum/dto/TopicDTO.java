@@ -55,17 +55,6 @@ public class TopicDTO {
         this.numberOfReplies = numberOfReplies;
     }
 
-    /*
-    public Set<Reply> getReplies() {
-        return replies;
-    }
-
-    public void setReplies(Set<Reply> replies) {
-        this.replies = replies;
-    }
-
-     */
-
     public String getTitle() {
         return title;
     }

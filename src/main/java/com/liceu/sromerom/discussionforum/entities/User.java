@@ -27,11 +27,9 @@ public class User {
     private String name;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.MERGE, orphanRemoval = true)
-    //@PrimaryKeyJoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Image avatar;
 
-    //@Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String role;
 
@@ -55,6 +53,8 @@ public class User {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Reply> repliesCreated;
 
+
+    //getters and setters
     public Long get_id() {
         return _id;
     }
@@ -103,7 +103,6 @@ public class User {
         this.role = role;
     }
 
-    //@JsonManagedReference(value = "getModeratedCategories")
     public Set<Category> getModeratedCategories() {
         return moderatedCategories;
     }
@@ -112,8 +111,6 @@ public class User {
         this.moderatedCategories = moderatedCategories;
     }
 
-
-    //@JsonManagedReference(value = "topicOwner")
     public Set<Topic> getTopicsCreated() {
         return topicsCreated;
     }
@@ -122,7 +119,6 @@ public class User {
         this.topicsCreated = topics;
     }
 
-    //@JsonManagedReference(value = "replyOwner")
     public Set<Reply> getRepliesCreated() {
         return repliesCreated;
     }

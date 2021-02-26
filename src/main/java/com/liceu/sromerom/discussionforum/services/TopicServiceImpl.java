@@ -1,7 +1,6 @@
 package com.liceu.sromerom.discussionforum.services;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.google.gson.Gson;
 import com.liceu.sromerom.discussionforum.dto.TopicDTORequest;
 import com.liceu.sromerom.discussionforum.entities.Topic;
 import com.liceu.sromerom.discussionforum.repos.CategoryRepo;
@@ -12,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -27,11 +26,6 @@ public class TopicServiceImpl implements TopicService {
 
     @Autowired
     UserRepo userRepo;
-
-    @Override
-    public List<Topic> findAll() {
-        return topicRepo.findAll();
-    }
 
     @Override
     public List<Topic> findByCategory(String slug) {
@@ -58,19 +52,22 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Topic editTopic(Long topicid, TopicDTORequest topicDTORequest) {
-
-        Topic topicToEdit = topicRepo.findById(topicid).get();
-        topicToEdit.setTitle(topicDTORequest.getTitle());
-        topicToEdit.setContent(topicDTORequest.getContent());
-        topicToEdit.setCategory(categoryRepo.findBySlug(topicDTORequest.getCategory()));
-        return topicRepo.save(topicToEdit);
+        Optional<Topic> exists = topicRepo.findById(topicid);
+        if (exists.isPresent()) {
+            Topic topicToEdit = exists.get();
+            topicToEdit.setTitle(topicDTORequest.getTitle());
+            topicToEdit.setContent(topicDTORequest.getContent());
+            topicToEdit.setCategory(categoryRepo.findBySlug(topicDTORequest.getCategory()));
+            return topicRepo.save(topicToEdit);
+        }
+        return null;
     }
 
     @Override
     public boolean deleteTopic(Long topicid) {
         if (existsTopic(topicid)) {
             topicRepo.deleteById(topicid);
-            if (!existsTopic(topicid)) return true;
+            return !existsTopic(topicid);
         }
         return false;
     }
@@ -92,12 +89,10 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = topicRepo.findById(topicid).get();
 
         if (topic.getUser().get_id().equals(userClaim.get("_id").asLong())) {
-            System.out.println("Es su propio topico!!");
             return true;
         }
 
         String role = userClaim.get("role").asString();
-
         JSONObject permissions = userClaim.get("permissions").as(JSONObject.class);
         if (permissions.get("categories").equals("") || permissions.get("categories") == null || permissions.size() == 0 || role.equals("user")) return false;
         Map<String, Object> categoriesMap = (Map<String, Object>) permissions.get("categories");

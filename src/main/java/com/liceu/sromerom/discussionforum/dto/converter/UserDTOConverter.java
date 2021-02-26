@@ -26,11 +26,10 @@ public class UserDTOConverter {
     @Value("${backend.host}")
     String host;
 
-
     public UserDTO convertToDto(User user) {
         modelMapper.typeMap(User.class, UserDTO.class).addMappings(mapper -> mapper.map(src -> src.getAvatar(), (dest, v) -> dest.getAvatarUrl()));
-        modelMapper.addConverter(toEmpty);
         modelMapper.addConverter(imageToUrl);
+        modelMapper.addConverter(toEmpty);
         return modelMapper.map(user, UserDTO.class);
     }
 

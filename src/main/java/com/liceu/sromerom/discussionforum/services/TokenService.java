@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface TokenService {
     String generateNewToken(UserDTO user);
+
     Map<String, Claim> getSubject(String token);
 }

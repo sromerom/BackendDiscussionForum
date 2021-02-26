@@ -20,8 +20,8 @@ public class CategoryDTOConverter {
     ModelMapper modelMapper;
 
     public CategoryDTO convertToDTO(Category category) {
-        modelMapper.addConverter(toEmpty);
         modelMapper.addConverter(parseModerators);
+        modelMapper.addConverter(toEmpty);
         return modelMapper.map(category, CategoryDTO.class);
     }
 

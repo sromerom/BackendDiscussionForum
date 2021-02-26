@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ReplyServiceImpl implements ReplyService{
@@ -29,12 +30,6 @@ public class ReplyServiceImpl implements ReplyService{
 
     @Override
     public Reply createReply(String email, Long topicid, ReplyDTO replyDTO) {
-        //id
-        //content
-        //createdAt
-        //updatedAt
-        //replyOwner
-        //topic
         User userToAdd = userRepo.findByEmail(email);
         Reply replyToCreate = new Reply();
         replyToCreate.setContent(replyDTO.getContent());
@@ -54,12 +49,13 @@ public class ReplyServiceImpl implements ReplyService{
 
     @Override
     public boolean deleteReply(Long replyid) {
-        Reply replyToDelete = replyRepo.findById(replyid).get();
-        if (replyToDelete != null) {
+        Optional<Reply> replyToDelete = replyRepo.findById(replyid);
+        if (replyToDelete.isPresent()) {
             replyRepo.deleteById(replyid);
-            if (replyRepo.findById(replyid).get() == null) return true;
+            Optional<Reply> exists = replyRepo.findById(replyid);
+            System.out.println("se ha eliminado?? " + exists.isEmpty());
+            return exists.isEmpty();
         }
-
         return false;
     }
 
@@ -74,7 +70,6 @@ public class ReplyServiceImpl implements ReplyService{
         Topic topic = topicRepo.findById(reply.getTopic().get_id()).get();
 
         if (reply.getUser().get_id().equals(userClaim.get("_id").asLong())) {
-            System.out.println("Es su propio reply!!");
             return true;
         }
 

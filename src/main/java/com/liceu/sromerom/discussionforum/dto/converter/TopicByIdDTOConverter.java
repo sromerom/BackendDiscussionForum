@@ -24,11 +24,9 @@ public class TopicByIdDTOConverter {
     ReplyDTOConverter replyDTOConverter;
 
     public TopicByIdDTO convertToDto(Topic topic) {
-        System.out.println("Mapeando TopicByIdDTO");
-        modelMapper.addConverter(toEmpty);
-        //modelMapper.typeMap(Topic.class, TopicByIdDTO.class).addMappings(mapper -> mapper.map(src -> src.getReplies(), (dest, v) -> dest.getReplies()));
         modelMapper.addConverter(setToList);
         modelMapper.typeMap(Topic.class, TopicByIdDTO.class).addMappings(mapper -> mapper.map(src -> src.getCategory().getModerators(), (dest, v) -> dest.getUser()));
+        modelMapper.addConverter(toEmpty);
         return modelMapper.map(topic, TopicByIdDTO.class);
     }
 
@@ -41,9 +39,7 @@ public class TopicByIdDTOConverter {
     Converter<Set<Reply>, List<ReplyDTO>> setToList = new AbstractConverter<>() {
         @Override
         protected List<ReplyDTO> convert(Set<Reply> replySet) {
-            System.out.println("Entras aqui????");
             List<ReplyDTO> replyDTOList = replySet.stream().map(replyDTOConverter::convertToDto).collect(Collectors.toList());
-            System.out.println(replyDTOList);
             return replyDTOList;
         }
 

@@ -61,7 +61,6 @@ public class CategoriesController {
 
     @PutMapping("/categories/{slug}")
     public ResponseEntity<?> putCategories(@RequestBody CategoryDTO modifyCategory, @PathVariable String slug, @RequestAttribute Map<String, Claim> user) {
-
         if (categoryService.userCanCRUDCategory(user) && categoryService.userHavePermissionInCategory(user, slug)) {
             if (categoryService.existsCategoryBySlug(slug)) {
                 return ResponseEntity.ok(categoryDTOConverter.convertToDTO(categoryService.editCategory(slug, modifyCategory)));
@@ -74,7 +73,6 @@ public class CategoriesController {
 
     @DeleteMapping("/categories/{slug}")
     public ResponseEntity<?> deleteCategories(@PathVariable String slug, @RequestAttribute Map<String, Claim> user) {
-
         if (categoryService.userCanCRUDCategory(user) && categoryService.userHavePermissionInCategory(user, slug)) {
             if (categoryService.existsCategoryBySlug(slug)) {
                 return ResponseEntity.ok(categoryService.deleteCategory(slug));
@@ -82,7 +80,6 @@ public class CategoriesController {
                 return ResponseEntity.notFound().build();
             }
         }
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 }

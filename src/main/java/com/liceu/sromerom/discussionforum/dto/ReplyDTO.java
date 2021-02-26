@@ -3,7 +3,6 @@ package com.liceu.sromerom.discussionforum.dto;
 import java.time.LocalDateTime;
 
 public class ReplyDTO {
-    //private Long topic;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -12,14 +12,16 @@ public class Image {
     private String name;
 
     @Lob
+    @Column(nullable = false)
     private byte[] photo;
-
 
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    //getters and setters
     public Long get_id() {
         return _id;
     }

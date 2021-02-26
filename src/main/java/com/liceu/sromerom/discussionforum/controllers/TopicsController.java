@@ -30,13 +30,7 @@ public class TopicsController {
     TopicByIdDTOConverter topicByIdDTOConverter;
 
     @Autowired
-    TopicCreateResponseConverter topicCreateResponseConverter;
-
-    @Autowired
-    UserDTOConverter userDTOConverter;
-
-    @Autowired
-    ReplyDTOConverter replyDTOConverter;
+    TopicCreateDTOResponseConverter topicCreateResponseConverter;
 
     @GetMapping("/categories/{slug}/topics")
     public ResponseEntity<?> getTopics(@PathVariable String slug) {
@@ -57,15 +51,14 @@ public class TopicsController {
     }
 
     @PostMapping("/topics")
-    public ResponseEntity<?> postTopic(@RequestAttribute Map<String, Claim> user, @RequestBody TopicDTORequest topicDTORequest) {
+    public ResponseEntity<?> postTopic(@RequestBody TopicDTORequest topicDTORequest, @RequestAttribute Map<String, Claim> user) {
         Topic topicCreated = topicService.createTopic(user.get("email").asString(), topicDTORequest);
-        String message;
-        JSONObject json = new JSONObject();
         if (topicCreated != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(topicCreateResponseConverter.convertToDto(topicCreated));
         } else {
+            JSONObject json = new JSONObject();
             json.put("message", "error");
-            message = json.toJSONString();
+            String message = json.toJSONString();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
     }

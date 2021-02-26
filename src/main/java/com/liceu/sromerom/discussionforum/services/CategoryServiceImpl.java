@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepo categoryRepo;
@@ -25,7 +25,6 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<Category> findAll() {
         return categoryRepo.findAll();
-
     }
 
     @Override
@@ -36,9 +35,7 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Category findBySlug(String slug) {
-        Category category = categoryRepo.findBySlug(slug);
-        if (category != null) return category;
-        return null;
+        return categoryRepo.findBySlug(slug);
     }
 
     @Override
@@ -48,26 +45,18 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Category createCategory(CategoryDTO categoryDTO) {
-        //slug
-        //color
         Category category = new Category();
-        String theoricalSlug = category.getTitle().toLowerCase().replace(" ", "-");
-        int aux = 1;
-        while (categoryRepo.existsBySlug(theoricalSlug)) {
-            theoricalSlug = category.getTitle().toLowerCase().replace(" ", "-") + aux;
-            aux++;
-        }
+        String slug = generateSlug(categoryDTO);
 
-        category.setSlug(theoricalSlug);
+        category.setTitle(categoryDTO.getTitle());
+        category.setDescription(categoryDTO.getDescription());
+        category.setSlug(slug);
         category.setColor(generateRandomColor());
-
-       return categoryRepo.save(category);
-
+        return categoryRepo.save(category);
     }
 
     @Override
     public Category editCategory(String slug, CategoryDTO categoryDTO) {
-
         Category toEdit = categoryRepo.findBySlug(slug);
         toEdit.setTitle(categoryDTO.getTitle());
         toEdit.setDescription(categoryDTO.getDescription());
@@ -84,11 +73,9 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public boolean userCanCRUDCategory(Map<String, Claim> userClaim) {
-        System.out.println("Entramos a comprobar!!");
-        System.out.println("inService: " + userClaim.toString());
         String role = userClaim.get("role").asString();
         JSONObject permissions = userClaim.get("permissions").as(JSONObject.class);
-        List<String> rootList =  (List<String>) permissions.get("root");
+        List<String> rootList = (List<String>) permissions.get("root");
         boolean canWrite = rootList.stream().anyMatch(root -> root.equals("categories:write"));
         boolean canDelete = rootList.stream().anyMatch(root -> root.equals("categories:delete"));
 
@@ -99,10 +86,22 @@ public class CategoryServiceImpl implements CategoryService{
     public boolean userHavePermissionInCategory(Map<String, Claim> userClaim, String slug) {
         String role = userClaim.get("role").asString();
         JSONObject permissions = userClaim.get("permissions").as(JSONObject.class);
-        if (permissions.get("categories").equals("") || permissions.get("categories") == null || permissions.size() == 0 || role.equals("user")) return false;
+        if (permissions.get("categories").equals("") || permissions.get("categories") == null || permissions.size() == 0 || role.equals("user"))
+            return false;
         Map<String, String> categoriesMap = (Map<String, String>) permissions.get("categories");
         boolean permissionInCurrentCategory = categoriesMap.containsKey(slug);
         return permissionInCurrentCategory && role.equals("admin");
+    }
+
+    private String generateSlug(CategoryDTO categoryDTO) {
+        String theoricalSlug = categoryDTO.getTitle().toLowerCase().replace(" ", "-");
+        int aux = 1;
+        while (categoryRepo.existsBySlug(theoricalSlug)) {
+            theoricalSlug = categoryDTO.getTitle().toLowerCase().replace(" ", "-") + aux;
+            aux++;
+        }
+
+        return theoricalSlug;
     }
 
     private String generateRandomColor() {

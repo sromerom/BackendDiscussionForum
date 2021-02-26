@@ -43,6 +43,7 @@ public class Topic {
     private Set<Reply> replies;
 
 
+    //getters and setters
     public Long get_id() {
         return _id;
     }
@@ -91,7 +92,6 @@ public class Topic {
         this.updatedAt = updatedAt;
     }
 
-    //@JsonBackReference
     public Category getCategory() {
         return category;
     }
@@ -100,7 +100,6 @@ public class Topic {
         this.category = category;
     }
 
-    //JsonBackReference(value = "topicOwner")
     public User getUser() {
         return user;
     }
@@ -109,7 +108,6 @@ public class Topic {
         this.user = topicOwner;
     }
 
-    //@JsonManagedReference
     public Set<Reply> getReplies() {
         return replies;
     }

@@ -14,6 +14,7 @@ public interface CategoryService {
     Category findById(Long categoryid);
 
     Category findBySlug(String slug);
+
     boolean existsCategoryBySlug(String slug);
 
     Category createCategory(CategoryDTO category);

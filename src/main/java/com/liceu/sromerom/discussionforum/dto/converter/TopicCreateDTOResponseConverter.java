@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TopicCreateResponseConverter {
+public class TopicCreateDTOResponseConverter {
     @Autowired
     ModelMapper modelMapper;
 
@@ -18,7 +18,6 @@ public class TopicCreateResponseConverter {
         modelMapper.typeMap(Topic.class, TopicCreateDTOResponse.class).addMappings(mapper -> mapper.map(src -> src.getCategory().get_id(), (dest, v) -> dest.getCategory()));
         modelMapper.typeMap(Topic.class, TopicCreateDTOResponse.class).addMappings(mapper -> mapper.map(src -> src.getUser().get_id(), (dest, v) -> dest.getUser()));
         modelMapper.addConverter(toEmpty);
-        //modelMapper.addMappings(parseCategory);
         return modelMapper.map(topic, TopicCreateDTOResponse.class);
     }
 

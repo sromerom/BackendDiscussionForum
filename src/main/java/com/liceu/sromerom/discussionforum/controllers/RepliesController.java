@@ -5,7 +5,6 @@ import com.liceu.sromerom.discussionforum.dto.ReplyDTO;
 import com.liceu.sromerom.discussionforum.dto.converter.ReplyDTOConverter;
 import com.liceu.sromerom.discussionforum.entities.Reply;
 import com.liceu.sromerom.discussionforum.services.ReplyService;
-import com.liceu.sromerom.discussionforum.services.UserService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,21 +20,17 @@ public class RepliesController {
     ReplyService replyService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
     ReplyDTOConverter replyDTOConverter;
 
     @PostMapping("/topics/{topicId}/replies")
     public ResponseEntity<?> postReplies(@RequestBody ReplyDTO replyDTO, @PathVariable Long topicId, @RequestAttribute Map<String, Claim> user) {
         Reply replyCreated = replyService.createReply(user.get("email").asString(), topicId, replyDTO);
-        String message;
         JSONObject json = new JSONObject();
         if (replyCreated != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(replyDTOConverter.convertToDto(replyCreated));
         } else {
             json.put("message", "error");
-            message = json.toJSONString();
+            String message = json.toJSONString();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
     }
@@ -62,7 +57,6 @@ public class RepliesController {
                 return ResponseEntity.notFound().build();
             }
         }
-
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

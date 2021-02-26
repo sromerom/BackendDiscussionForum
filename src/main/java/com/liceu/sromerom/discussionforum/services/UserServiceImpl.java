@@ -75,11 +75,9 @@ public class UserServiceImpl implements UserService{
                     }
                 }
                 User insertedUser = userRepo.save(userToCreate);
-                if (insertedUser != null) return true;
-                return false;
+                return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
            return false;
         }
         return false;
@@ -99,8 +97,8 @@ public class UserServiceImpl implements UserService{
 
         if (editProfileUserDTORequest.getAvatar() != null) {
 
+            //Si ja te carregada una foto, primer s'ha d'eliminar de la base de dades
             if (userToEdit.getAvatar() != null) {
-                System.out.println("Entramos a borrar!!");
                 Image imageToDelete = userToEdit.getAvatar();
                 imageRepo.delete(imageToDelete);
             }
@@ -110,7 +108,6 @@ public class UserServiceImpl implements UserService{
             newImage.setUser(userToEdit);
             imageRepo.save(newImage);
             userToEdit.setAvatar(newImage);
-            //userToEdit.setAvatarUrl(editProfileUserDTO.getAvatar());
         }
 
         return userRepo.save(userToEdit);
@@ -129,10 +126,10 @@ public class UserServiceImpl implements UserService{
                 String generatedSecuredPassword = HashUtil.generatePasswordHash(editPasswordUserDTORequest.getNewPassword());
                 userToEditPassword.setPassword(generatedSecuredPassword);
                 User insertedUser = userRepo.save(userToEditPassword);
-                if (insertedUser != null) return true;
+                return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
         return false;
     }
@@ -142,9 +139,7 @@ public class UserServiceImpl implements UserService{
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 15;
         Random random = new Random();
-
         String generatedString = null;
-
 
         while (generatedString == null) {
             generatedString = random.ints(leftLimit, rightLimit + 1)
@@ -154,8 +149,8 @@ public class UserServiceImpl implements UserService{
                     .toString();
 
             if (imageRepo.existsByName(generatedString)) generatedString = null;
-            System.out.println(generatedString);
         }
+
         return generatedString;
     }
 }

@@ -16,6 +16,8 @@ public class Category {
 
     @Column(nullable = false, unique = true)
     private String slug;
+
+    @Column(nullable = false)
     private String title;
     private String description;
     private String color;
@@ -28,10 +30,11 @@ public class Category {
     //Relationship Category-Topic (1-N)
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-    @net.minidev.json.annotate.JsonIgnore
+    //@JsonIgnore
+    //@net.minidev.json.annotate.JsonIgnore
     private Set<Topic> topics;
 
+    //getters and setters
     public Long get_id() {
         return _id;
     }
@@ -72,7 +75,6 @@ public class Category {
         this.color = color;
     }
 
-    //@JsonManagedReference
     public Set<User> getModerators() {
         return moderators;
     }
@@ -81,7 +83,6 @@ public class Category {
         this.moderators = moderators;
     }
 
-    //@JsonManagedReference
     public Set<Topic> getTopics() {
         return topics;
     }
