@@ -1,17 +1,13 @@
 package com.liceu.sromerom.discussionforum.services;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.google.gson.JsonObject;
 import com.liceu.sromerom.discussionforum.dto.CategoryDTO;
 import com.liceu.sromerom.discussionforum.entities.Category;
 import com.liceu.sromerom.discussionforum.repos.CategoryRepo;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

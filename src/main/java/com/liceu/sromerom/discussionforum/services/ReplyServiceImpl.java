@@ -52,8 +52,7 @@ public class ReplyServiceImpl implements ReplyService{
         Optional<Reply> replyToDelete = replyRepo.findById(replyid);
         if (replyToDelete.isPresent()) {
             replyRepo.deleteById(replyid);
-            Optional<Reply> exists = replyRepo.findById(replyid);
-            System.out.println("se ha eliminado?? " + exists.isEmpty());
+            Optional<Reply> exists = replyRepo.findById(replyid);;
             return exists.isEmpty();
         }
         return false;
